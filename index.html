@@ -176,16 +176,20 @@ a.row{color:inherit}
 .duecard .stat small{font-size:15px;font-weight:500}
 .perks{display:flex;flex-wrap:wrap;gap:6px}.perks span{background:var(--card2);border-radius:999px;padding:5px 11px;font-size:14px}
 #specs td{font-size:15px}
+.dirseg{margin-top:10px;background:light-dark(#e3e3e8,#2c2c2e);border-radius:11px;padding:3px}
+.dirseg button{min-height:42px;font-size:16px;font-weight:600;color:light-dark(#3c3c43,#ebebf5);border-radius:9px}
+.dirseg button[aria-pressed=true]{background:var(--blue);color:#fff;box-shadow:none}
+.toprow{align-items:center}
 </style>
 </head>
 <body>
 <header class="nav" id="nav"><div class="in">
   <div class="toprow">
     <div class="title" id="destName">Henderson</div>
-    <button class="dirbtn" id="bDir" aria-label="Switch direction"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg><span id="dirTx">Going</span></button>
   </div>
   <div class="sub" id="destSub"></div>
   <div class="pills" id="routes"></div>
+  <div class="seg dirseg" id="dirSeg" role="group" aria-label="Direction"></div>
 </div></header>
 
 <main class="wrap" id="tripV">
@@ -428,10 +432,10 @@ function render(){
  const v=['trip','map','drive','car'].includes(t.view)?t.view:'trip',drive=v!=='map';
  for(const k of ['trip','map','drive','car'])$(k+'V').hidden=v!==k;
  document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===v));
- $('routes').hidden=v==='car';$('bDir').hidden=v==='car';
+ $('routes').hidden=v==='car';$('dirSeg').hidden=v==='car';
  $('destName').textContent=v==='car'?'Corolla':R.dest.name;
  $('destSub').textContent=v==='car'?SPEC.car:(R.back?'from '+R.b.name+' · ':(R.dest.sub?R.dest.sub+' · ':''))+'~'+R.M+' mi · '+hm(R.b.min)+' driving';
- $('dirTx').textContent=R.back?'Home':'Going';
+ $('dirSeg').innerHTML=`<button data-dir="out" aria-pressed="${!R.back}">→ To ${esc(R.b.name)}</button><button data-dir="back" aria-pressed="${R.back}">← Home to Provo</button>`;
  $('routes').innerHTML=Object.values(allRoutes()).map(r=>`<button class="pill" data-r="${esc(r.id)}" aria-pressed="${r.id===t.route}">${esc(r.name)}</button>`).join('');
  $('modes').innerHTML=[['direct','Straight there'],['stops','Make stops']].map(([k,l])=>`<button data-mode="${k}" aria-pressed="${t.mode===k}">${l}</button>`).join('');
  // ring
@@ -692,14 +696,15 @@ function herePick(){const R=route(),F=fuel(R),pos=F.pos||0;
 
 document.addEventListener('click',e=>{const t=S.trip,q=sel=>e.target.closest(sel);
  let el;
- if(el=q('[data-r]')){t.route=el.dataset.r;t.pos=0;t.posAt=null;t.rangePos=0;save('trip');render()}
+ if(el=q('[data-dir]')){if(t.dir!==el.dataset.dir){t.dir=el.dataset.dir;t.pos=0;t.posAt=null;t.rangePos=0;save('trip');render()}}
+ else if(el=q('[data-r]')){t.route=el.dataset.r;t.pos=0;t.posAt=null;t.rangePos=0;save('trip');render()}
  else if(el=q('[data-mode]')){t.mode=el.dataset.mode;save('trip');render()}
  else if(el=q('[data-g]')){if(el.dataset.g==='x')exactRange();else{t.range=Math.round(fullR()*+el.dataset.g);t.rangePos=t.pos||0;save('trip');render()}}
  else if(el=q('[data-s]')){const s=route().st.find(x=>x.id===el.dataset.s);if(s)stopSheet(s)}
  else if(el=q('[data-tab]')){t.view=el.dataset.tab;save('trip');render();scrollTo(0,0)}
  else if(el=q('[data-c]')){t.checks[el.dataset.c]=el.checked;save('trip')}
 });
-$('bDir').onclick=()=>{const t=S.trip;t.dir=t.dir==='back'?'out':'back';t.pos=0;t.posAt=null;t.rangePos=0;save('trip');render()};
+
 const navH=()=>document.documentElement.style.setProperty('--navh',document.querySelector('.nav').offsetHeight+'px');
 addEventListener('scroll',()=>{document.querySelector('.nav').classList.toggle('compact',scrollY>30)},{passive:true});
 new ResizeObserver(navH).observe(document.querySelector('.nav'));
