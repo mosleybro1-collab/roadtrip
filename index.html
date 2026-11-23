@@ -27,7 +27,7 @@
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
-.nav{position:sticky;top:0;z-index:5;background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep);padding:calc(env(safe-area-inset-top) + 8px) 16px 10px}
+.nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:.5px solid transparent;padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;transition:border-color .2s}.nav.compact{border-bottom-color:var(--sep)}
 .nav .in,.wrap{max-width:680px;margin:0 auto}
 .wrap{padding:6px 16px calc(40px + env(safe-area-inset-bottom))}
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -136,46 +136,77 @@ button:active,.btn:active,.row:active,.choice:active,.dbtn:active,.pill:active{t
 .sheet.on{animation:fade .2s}.sheet.on .box{animation:up .28s cubic-bezier(.2,.8,.2,1)}
 @media(prefers-reduced-motion:reduce){.sheet.on,.sheet.on .box{animation:none}}
 @media(prefers-reduced-motion:no-preference){.me{transition:left .5s ease}.ring circle{transition:stroke-dasharray .6s ease}}
+
+/* polish */
+.title{margin:0;font-size:34px;font-weight:700;letter-spacing:.01em}
+.toprow{align-items:flex-end}
+.sub{margin-top:2px;font-size:15px}
+.dirbtn{border:0;background:var(--card);color:var(--blue);font:600 15px inherit;font-family:inherit;border-radius:999px;min-height:36px;padding:0 12px 0 10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:4px}
+.dirbtn .icon{width:18px;height:18px}
+.pill{background:var(--card);font-weight:500}
+.seg{background:light-dark(#e3e3e8,#1c1c1e)}
+.hdr{text-transform:uppercase;font-size:13px;margin:26px 16px 8px}
+.card{border-radius:14px}
+.hero2{padding:0;overflow:hidden}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:16px 8px 14px}
+.stats>div{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:0 6px}
+.stats>div+div{border-left:.5px solid var(--sep)}
+.stats b{font-size:24px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.stats .k{font-size:12px}
+.rowbtn{display:flex;align-items:center;gap:12px;width:100%;border:0;border-top:.5px solid var(--sep);background:transparent;color:var(--ink);font:inherit;text-align:left;padding:12px 16px;min-height:56px;cursor:pointer}
+.rowbtn .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex:none}.rowbtn .ic .icon{width:17px;height:17px}
+.rowbtn .tx{flex:1;font-weight:500}.rowbtn .tx small{display:block;font-size:13px;font-weight:400;color:var(--ink2)}
+.fuelrow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.ring.sm{width:88px;height:88px}.ring.sm .v b{font-size:24px}.ring.sm .v span{font-size:11px;margin-top:1px}
+.rbox{margin:0}.rbox label{font-size:13px}
+.inwrap{position:relative}.inwrap span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--ink2);font-size:17px;pointer-events:none}
+.rrow input{font-size:24px;min-height:50px;padding-right:40px;border-radius:10px}
+.rrow .btn{min-height:50px;padding:0 18px;border-radius:10px}
+.advice{border-radius:10px}
+.btn.big{min-height:54px;font-size:17px;border-radius:14px}
+.btn.danger{background:var(--red);color:#fff}
+.acts{margin-top:12px}.acts .row{text-decoration:none}
+a.row{color:inherit}
 </style>
 </head>
 <body>
-<header class="nav"><div class="in">
+<header class="nav" id="nav"><div class="in">
   <div class="toprow">
-    <div class="appname"><span class="appicon"><svg viewBox="0 0 24 24" class="icon" style="width:14px;height:14px;stroke:#fff"><path d="M4 19h16M6 15l4-9 4 6 2-3 4 6"/></svg></span>Road Trip</div>
-    <button class="pill" id="bDir"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg><span id="dirTx">Going</span></button>
+    <div class="title" id="destName">Henderson</div>
+    <button class="dirbtn" id="bDir" aria-label="Switch direction"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg><span id="dirTx">Going</span></button>
   </div>
-  <div class="title" id="destName">Mosley Home</div>
   <div class="sub" id="destSub"></div>
   <div class="pills" id="routes"></div>
 </div></header>
 
 <main class="wrap" id="tripV">
-  <div class="seg" style="margin-top:14px" id="modes"></div>
+  <div class="seg" style="margin-top:16px" id="modes"></div>
 
-  <section class="card">
-    <div class="hero">
-      <div class="ring" id="ring"></div>
-      <div>
-        <div class="k">Arrive</div>
-        <div class="bigt" id="eta">—</div>
-        <div class="mid" id="etaSub"></div>
-        <div class="mid" id="leave"></div>
-      </div>
+  <section class="card hero2">
+    <div class="stats">
+      <div><span class="k">Arrive</span><b id="eta">—</b><span class="k" id="etaZone"></span></div>
+      <div><span class="k">Driving</span><b id="sDrive">—</b><span class="k">at avg pace</span></div>
+      <div><span class="k">Stops</span><b id="sStops">—</b><span class="k">incl. gas</span></div>
     </div>
-    <form class="rbox" id="rInF"><label for="rIn">Miles to empty on your dash</label><div class="rrow"><input id="rIn" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="600" placeholder="e.g. 312" enterkeyhint="done"><button class="btn fill" type="submit">Set</button></div></form>
+    <button class="rowbtn" id="bTime"><span class="ic" style="background:var(--blue)"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span class="tx" id="leave">Leaving now</span><span class="chev">›</span></button>
+  </section>
+
+  <div class="hdr">Fuel</div>
+  <section class="card">
+    <div class="fuelrow">
+      <div class="ring sm" id="ring"></div>
+      <form class="rbox" id="rInF"><label for="rIn">Miles to empty on your dash</label><div class="rrow"><div class="inwrap"><input id="rIn" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="600" placeholder="312" enterkeyhint="done"><span>mi</span></div><button class="btn fill" type="submit">Set</button></div></form>
+    </div>
     <div class="advice" id="advice"></div>
     <div class="plan" id="fplan"></div>
     <div class="track" id="track" aria-hidden="true"></div>
-    <div class="legend"><span><i style="background:var(--green)"></i>Tank reaches</span><span><i style="background:var(--yellow)"></i>Cushion</span><span><i style="background:var(--blue);border-radius:50%"></i>You</span><span><i style="background:var(--orange);border-radius:50%"></i>Fuel stop</span></div>
   </section>
 
-
-  <div class="btns">
-    <button class="btn" id="bTime"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Leave / Arrive by</button>
-    <button class="btn" id="bTrip">Start trip</button>
-    <a class="btn" id="gmaps" href="#" target="_blank" rel="noopener">Google Maps</a>
-    <a class="btn" id="amaps" href="#" target="_blank" rel="noopener">Apple Maps</a>
-    <button class="btn" id="bShare" style="grid-column:1/-1"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v13M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Send trip to Abby</button>
+  <button class="btn fill big" id="bTrip" style="width:100%;margin-top:16px">Start trip</button>
+  <div class="list acts">
+    <a class="row" id="gmaps" href="#" target="_blank" rel="noopener"><span class="ic" style="background:#34a853"><svg class="icon" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="tx"><b>Directions in Google Maps</b><span>Live traffic, with your stops</span></span><span class="chev">›</span></a>
+    <a class="row" id="amaps" href="#" target="_blank" rel="noopener"><span class="ic" style="background:#007aff"><svg class="icon" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg></span><span class="tx"><b>Directions in Apple Maps</b><span>Straight to the destination</span></span><span class="chev">›</span></a>
+    <button class="row" id="bShare"><span class="ic" style="background:#ff9500"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3v13M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></span><span class="tx"><b>Send trip to Abby</b><span>Texts her the whole plan</span></span><span class="chev">›</span></button>
   </div>
 
   <div class="hdr" id="stopsHdr">Exits &amp; stops</div>
@@ -372,21 +403,21 @@ function render(){
  $('routes').hidden=v==='car';$('bDir').hidden=v==='car';
  $('destName').textContent=v==='car'?'Corolla':R.dest.name;
  $('destSub').textContent=v==='car'?SPEC.car:(R.back?'from '+R.b.name+' · ':(R.dest.sub?R.dest.sub+' · ':''))+'~'+R.M+' mi · '+hm(R.b.min)+' driving';
- $('dirTx').textContent=R.back?'Heading home':'Going';
+ $('dirTx').textContent=R.back?'Home':'Going';
  $('routes').innerHTML=Object.values(allRoutes()).map(r=>`<button class="pill" data-r="${esc(r.id)}" aria-pressed="${r.id===t.route}">${esc(r.name)}</button>`).join('');
  $('modes').innerHTML=[['direct','Straight there'],['stops','Make stops']].map(([k,l])=>`<button data-mode="${k}" aria-pressed="${t.mode===k}">${l}</button>`).join('');
  // ring
  const pct=F.set?Math.max(0,Math.min(1,F.left/fr)):0,col=!F.set?'var(--card2)':F.state==='out'||F.state==='tight'?'var(--red)':pct<.3?'var(--orange)':'var(--green)';
  const C=2*Math.PI*56;
- $('ring').innerHTML=`<svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--card2)" stroke-width="13"/><circle cx="66" cy="66" r="56" fill="none" stroke="${col}" stroke-width="13" stroke-linecap="round" stroke-dasharray="${(pct*C).toFixed(1)} ${C.toFixed(1)}"/></svg><div class="v"><b>${F.set?fmt(F.left):'—'}</b><span>miles to empty</span></div>`;
+ $('ring').innerHTML=`<svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--card2)" stroke-width="13"/><circle cx="66" cy="66" r="56" fill="none" stroke="${col}" stroke-width="13" stroke-linecap="round" stroke-dasharray="${(pct*C).toFixed(1)} ${C.toFixed(1)}"/></svg><div class="v"><b>${F.set?fmt(F.left):'—'}</b><span>mi left</span></div>`;
  const zn=ZN[R.dest.tz];
  $('eta').textContent=tf(T._dest,R.dest.tz);
  const late=t.arriveBy?Math.round((T._dest-Date.parse(t.arriveBy))/6e4):0;
- $('etaSub').textContent=(zn?zn+' · ':'')+hm(T._drive)+' driving'+(T._stops?' + '+hm(T._stops)+' stops':'');
- $('leave').innerHTML=T._live?(t.arriveBy?(late>5?`<span class="warn">${hm(late)} behind your arrive-by</span>`:'<span class="ok">On pace for your arrive-by</span>'):'Updating from your last check-in'):
-  t.arriveBy?`<b style="color:var(--ink)">Leave by ${esc(df(T._leave,R.origin.tz))}</b>`:`Leaving ${t.depart?esc(df(new Date(t.depart),R.origin.tz)):'now'}`;
+ $('etaZone').textContent=zn||(R.dest.tz===MT?'Mountain time':'');$('sDrive').textContent=hm(T._drive);$('sStops').textContent=T._stops?hm(T._stops):'None';
+ $('leave').innerHTML=(T._live?(t.arriveBy?(late>5?`<span class="warn">${hm(late)} behind your arrive-by</span>`:'<span class="ok">On pace for your arrive-by</span>'):'Updating from your last check-in'):
+  t.arriveBy?`<b style="color:var(--ink)">Leave by ${esc(df(T._leave,R.origin.tz))}</b>`:`Leaving ${t.depart?esc(df(new Date(t.depart),R.origin.tz)):'now'}`)+'<small>Tap to set leave or arrive-by time</small>';
  // gauge
- for(const i of ['rIn','dIn'])$(i).placeholder=F.set?'Now '+fmt(F.left)+' · type new':'e.g. 312';
+ for(const i of ['rIn','dIn'])$(i).placeholder=F.set?String(Math.round(F.left)):'312';
  // advice
  let dc='var(--card2)',ic='gas',a='',b='';
  if(!F.set){a='Enter your miles to empty';b='Type the miles-to-empty from your dash in the box above. A full tank is about '+fr+' mi'+(mpgInfo()?' (learned from your fill-ups)':'')+'.';dc='var(--blue)'}
@@ -418,7 +449,7 @@ function render(){
  const wp=t.mode==='direct'?[]:R.st.filter(s=>stops(s)&&(s.addr||s.near)&&s.m>(F.pos||0)).map(s=>s.addr||(s.name+', '+s.near));
  $('gmaps').href='https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent(T._live&&t.pos>0?'Current Location':R.origin.addr)+'&destination='+encodeURIComponent(R.dest.addr)+(wp.length?'&waypoints='+encodeURIComponent(wp.join('|')):'');
  $('amaps').href='https://maps.apple.com/?dirflg=d&daddr='+encodeURIComponent(R.dest.addr);
- $('bTrip').textContent=t.active?'End trip':'Start trip';$('bTrip').className='btn'+(t.active?' fill':'');
+ $('bTrip').textContent=t.active?'End trip':'Start trip';$('bTrip').className='btn big '+(t.active?'danger':'fill');
  if(!drive)drawMap(R,F);renderDrive(R,F,T);renderCar(R);$('pAsOf').textContent=(S.prices.source||'state averages')+' from '+(S.prices.asOf||'—')+' (UT $'+(+S.prices.UT).toFixed(2)+', NV $'+(+S.prices.NV).toFixed(2)+', AZ $'+(+S.prices.AZ).toFixed(2)+', ID $'+(+S.prices.ID).toFixed(2)+')';renderChecks(R);renderLog();
  if(document.activeElement!==$('sRes'))$('sRes').value=t.reserve;if(document.activeElement!==$('sSpd'))$('sSpd').value=t.speed||'';
 }
