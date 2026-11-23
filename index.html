@@ -435,7 +435,7 @@ function render(){
  $('routes').hidden=v==='car';$('dirSeg').hidden=v==='car';
  $('destName').textContent=v==='car'?'Corolla':R.dest.name;
  $('destSub').textContent=v==='car'?SPEC.car:(R.back?'from '+R.b.name+' · ':(R.dest.sub?R.dest.sub+' · ':''))+'~'+R.M+' mi · '+hm(R.b.min)+' driving';
- $('dirSeg').innerHTML=`<button data-dir="out" aria-pressed="${!R.back}">→ To ${esc(R.b.name)}</button><button data-dir="back" aria-pressed="${R.back}">← Home to Provo</button>`;
+ $('dirSeg').innerHTML=`<button data-dir="out" aria-pressed="${!R.back}">Going →</button><button data-dir="back" aria-pressed="${R.back}">← Coming home</button>`;
  $('routes').innerHTML=Object.values(allRoutes()).map(r=>`<button class="pill" data-r="${esc(r.id)}" aria-pressed="${r.id===t.route}">${esc(r.name)}</button>`).join('');
  $('modes').innerHTML=[['direct','Straight there'],['stops','Make stops']].map(([k,l])=>`<button data-mode="${k}" aria-pressed="${t.mode===k}">${l}</button>`).join('');
  // ring
