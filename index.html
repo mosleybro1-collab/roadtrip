@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Road Trip">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f2f2f7">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="corolla-180.png">
 <link rel="icon" href="corolla-192.png">
@@ -182,6 +181,8 @@ a.row{color:inherit}
 .toprow{align-items:center}
 .nav{position:relative;top:auto;padding-top:calc(env(safe-area-inset-top) + 18px)}
 .nav .title{font-size:32px}
+:root,:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+html,body{background:#000}
 </style>
 </head>
 <body>
