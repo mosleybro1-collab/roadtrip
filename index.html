@@ -179,7 +179,7 @@ a.row{color:inherit}
 .dirseg button{min-height:42px;font-size:16px;font-weight:600;color:light-dark(#3c3c43,#ebebf5);border-radius:9px}
 .dirseg button[aria-pressed=true]{background:var(--blue);color:#fff;box-shadow:none}
 .toprow{align-items:center}
-.nav{position:relative;top:auto;padding-top:calc(env(safe-area-inset-top) + 18px)}
+.nav{position:relative;top:auto;padding-top:calc(env(safe-area-inset-top) + 30px)}
 .nav .title{font-size:32px}
 :root,:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
 html,body{background:#000}
@@ -734,7 +734,7 @@ setInterval(()=>{if(!$('sheet').classList.contains('on'))render()},60000);
 render();
 applyAddr();render();setSync('Saved on this phone · works offline');
 fetch('prices.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>{if(p&&p.UT&&p.asOf&&p.asOf!==S.prices.asOf){S.prices=Object.assign(clone(DEF.prices),p);save('prices');render()}}).catch(()=>{});
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,done=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!done){done=true;location.reload()}});navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update();document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update()})}).catch(()=>{})}
 checkHash();addEventListener('hashchange',checkHash);
 }
 </script>
