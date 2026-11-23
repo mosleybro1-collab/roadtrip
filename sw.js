@@ -1,4 +1,4 @@
-const C='roadtrip-v4',FILES=['./','index.html','manifest.webmanifest','corolla-180.png','corolla-192.png','corolla-512.png','prices.json','car.jpg'];
+const C='roadtrip-v5',FILES=['./','index.html','manifest.webmanifest','corolla-180.png','corolla-192.png','corolla-512.png','prices.json','car.jpg'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(FILES)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.origin!==location.origin)return;
