@@ -167,6 +167,15 @@ button:active,.btn:active,.row:active,.choice:active,.dbtn:active,.pill:active{t
 .btn.danger{background:var(--red);color:#fff}
 .acts{margin-top:12px}.acts .row{text-decoration:none}
 a.row{color:inherit}
+.carhero{position:relative;margin:-16px -16px 0;border-radius:14px 14px 0 0;overflow:hidden;background:#d9d9de}
+.carhero img{display:block;width:100%;aspect-ratio:2/1;object-fit:cover}
+.carcap{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 12px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff}
+.carcap b{display:block;font-size:22px}.carcap span{font-size:14px;opacity:.9}
+.duegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px}
+.duecard{background:var(--card);border-radius:14px;padding:14px}
+.duecard .stat small{font-size:15px;font-weight:500}
+.perks{display:flex;flex-wrap:wrap;gap:6px}.perks span{background:var(--card2);border-radius:999px;padding:5px 11px;font-size:14px}
+#specs td{font-size:15px}
 </style>
 </head>
 <body>
@@ -228,6 +237,19 @@ a.row{color:inherit}
 <main class="wrap" id="carV" hidden>
   <div style="height:2px"></div>
   <section class="card" id="car"></section>
+  <div class="hdr">What’s due</div>
+  <div class="duegrid" id="due"></div>
+  <div class="hdr">Mileage</div>
+  <section class="card"><svg id="miles" style="width:100%;height:220px;display:block"></svg><div class="legend" id="milesKey" style="margin-top:8px"></div></section>
+  <div class="hdr">Service history</div>
+  <div class="list" id="hist"></div>
+  <section class="card" id="syncBox"></section>
+  <div class="hdr">Car details</div>
+  <section class="card" style="padding:4px 16px"><table id="specs"></table></section>
+  <div class="hdr">Discount Tire</div>
+  <section class="card"><div class="k" style="margin-bottom:8px">Your tires were bought there, so these come free for the life of the tires:</div>
+    <div class="perks"><span>Rotation &amp; balancing</span><span>Flat repairs</span><span>Air checks</span><span>Tire inspections</span></div>
+    <div class="k" style="margin-top:10px">The purchase is on file under your dad’s email; give them that at the counter. Discount Tire suggests rotating every 6,000–8,000 mi; Toyota says every 5,000.</div></section>
 
   <div class="hdr">Before you go</div>
   <div class="list" id="checks"></div>
@@ -300,7 +322,13 @@ const BASE={
  mesa:{id:'mesa',name:'Mesa',sub:'via Henderson',addr:'Mesa, AZ',ll:[33.45,-111.79],miles:710,min:680,zones:AZZONES,stops:VIA_HENDERSON}
 };
 const DEF={addr:{},prices:{UT:3.96,NV:4.80,AZ:3.97,ID:3.99,asOf:'Nov 20, 2026',source:'AAA state averages'},trip:{route:'henderson',dir:'out',mode:'stops',range:null,rangePos:0,pos:0,posAt:null,depart:null,arriveBy:null,reserve:30,speed:null,active:null,checks:{},off:{},mins:{},prices:{},view:'trip'},
- custom:{stops:[],routes:[]},log:{trips:[],fills:[]},car:{odometer:126388,odoDate:'2026-11-12',lastOil:125224,lastRot:126388,oilSevere:5000,oilNormal:10000,rot:5000,pending:[],syncedAt:null}};
+ custom:{stops:[],routes:[]},log:{trips:[],fills:[]},car:{history:[
+ {date:'2026-05-13',odometer:119920,kind:'Tires',service:'New tires installed (Discount Tire)',note:'Date approximate'},
+ {date:'2026-05-13',odometer:119920,kind:'Oil',service:'Oil change',note:'First oil change after getting the car'},
+ {date:'2026-08-17',odometer:124000,kind:'Reading',service:'Odometer reading',note:'Close to 124k'},
+ {date:'2026-10-03',odometer:125224,kind:'Oil',service:'Oil change, full synthetic',note:''},
+ {date:'2026-10-31',odometer:126096,kind:'Reading',service:'Odometer reading',note:''},
+ {date:'2026-11-12',odometer:126388,kind:'Tires',service:'Tire rotation & balance, TPMS service, inspection (Discount Tire, Provo)',note:''}],pending:[],syncedAt:null}};
 const PATHS={prices:1,trip:1,custom:1,log:1,car:1,addr:1};
 const IC={gas:'<path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 21h13M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3M7 7h5"/>',food:'<path d="M5 3v8a3 3 0 0 0 6 0V3M8 3v18M17 21V3c-2 1-3 4-3 7h3"/>',family:'<path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-5h4v5"/>',rest:'<path d="M4 20V8l8-5 8 5v12M9 20v-6h6v6"/>',sight:'<path d="M3 20 9 9l4 6 3-4 5 9z"/><circle cx="16" cy="6" r="2"/>',flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'};
 const KC={gas:'#ff9500',food:'#ff2d55',family:'#34c759',rest:'#5856d6',sight:'#007aff',flag:'#8e8e93'};
@@ -390,7 +418,7 @@ function shareTrip(){const t=S.trip,R=route();
  if(navigator.share)navigator.share({title:'Road Trip',text,url}).catch(()=>{});
  else navigator.clipboard.writeText(url).then(()=>setSync('Trip link copied'),()=>prompt('Copy this link',url))}
 function copyForClaude(){const c=S.car,L=S.log.trips.slice(-5);
- const txt='Sync my road trips. Corolla updates from my Road Trip app:\n'+c.pending.map(p=>'- '+p.date+': '+p.service+' · odometer '+p.odometer+(p.note?' · '+p.note:'')).join('\n')+(L.length?'\nRecent trips:\n'+L.map(x=>'- '+x.date+' '+x.name+': '+x.miles+' mi'+(x.gal?', '+x.gal+' gal':'')+(x.mpg?', '+x.mpg.toFixed(1)+' mpg':'')).join('\n'):'');
+ const txt='Add these to my Apple Note "Auto maintenance:" (from my Road Trip app):\n'+c.pending.map(p=>'- '+p.date+': '+p.service+' · odometer '+p.odometer+(p.note?' · '+p.note:'')).join('\n')+(L.length?'\nRecent trips:\n'+L.map(x=>'- '+x.date+' '+x.name+': '+x.miles+' mi'+(x.gal?', '+x.gal+' gal':'')+(x.mpg?', '+x.mpg.toFixed(1)+' mpg':'')).join('\n'):'');
  const done=()=>{sheet('Copied','Paste it into a chat with Claude. Mark these as sent?',[{id:'x',type:'choices',opts:[['yes','Yes, clear the list',''],['no','Keep them for now','']]}],v=>{if(v.x==='yes'){S.car.pending=[];S.car.syncedAt=today();save('car');render()}})};
  navigator.clipboard.writeText(txt).then(done,()=>{prompt('Copy this',txt);done()})}
 
@@ -515,20 +543,56 @@ function renderDrive(R,F,T){
  $('dRange').textContent=F.set?fmt(F.left):'—';$('dRange').className='huge '+(!F.set?'':F.left<60?'bad':F.left<120?'warn':'');
  $('dEta').textContent=tf(T._dest,R.dest.tz);$('dEtaSub').textContent=ZN[R.dest.tz]||'';
 }
+const INTV=[{key:'rot',item:'Tire rotation & balance',kinds:['Tires','Rotation'],miles:5000,months:6,note:'Free at Discount Tire'},
+ {key:'oilS',item:'Oil change · short trips/winter',kinds:['Oil'],miles:5000,months:6,note:'Toyota severe schedule, 0W-20'},
+ {key:'oilN',item:'Oil change · normal driving',kinds:['Oil'],miles:10000,months:12,note:'Toyota normal schedule, 0W-20'}];
+function carInfo(){const c=S.car;
+ if(!c.history){c.history=clone(DEF.car.history);if(c.odometer>126388)c.history.push({date:c.odoDate||today(),odometer:c.odometer,kind:'Reading',service:'Odometer reading',note:''})}
+ const H=c.history.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.odometer-b.odometer);
+ const last=H.reduce((m,x)=>x.odometer>m.odometer?x:m,H[0]),first=H[0];
+ const days=Math.max(1,(Date.parse(last.date)-Date.parse(first.date))/864e5),perDay=(last.odometer-first.odometer)/days;
+ const since=Math.max(0,(Date.now()-Date.parse(last.date+'T12:00:00'))/864e5),est=Math.round(last.odometer+perDay*since);
+ const due=INTV.map(i=>{const d=H.filter(x=>i.kinds.includes(x.kind)).pop();if(!d)return null;const nd=new Date(d.date+'T12:00:00');nd.setMonth(nd.getMonth()+i.months);
+  return Object.assign({},i,{lastMi:d.odometer,lastDate:d.date,next:d.odometer+i.miles,nextDate:nd,left:d.odometer+i.miles-est,daysLeft:Math.round((nd-Date.now())/864e5)})}).filter(Boolean);
+ return{H,last,est,perDay,perMonth:Math.round(perDay*30.44),due}}
+const fd=d=>new Date((typeof d==='string'?d+'T12:00:00':d)).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'});
+function addHistory(e){S.car.history=(S.car.history||[]).concat([e]);S.car.pending.push(e);save('car')}
 function renderCar(R){
- const c=S.car,o=c.odometer,oilS=c.lastOil+c.oilSevere,oilN=c.lastOil+c.oilNormal,rot=c.lastRot+c.rot,rt=R.M*2,after=o+rt,m=mpgInfo();
- const bar=(u,n)=>{const p=Math.min(100,u/n*100);return `<div class="meter"><i class="${p>90?'r':p>70?'w':''}" style="width:${p}%"></i></div>`};
- const warn=[];if(after>oilS)warn.push('passes the 5,000-mi oil mark');if(after>rot)warn.push('passes the next tire rotation');
- $('car').innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="k">Odometer</div><div class="stat">${fmt(o)}</div><div class="k">as of ${esc(c.odoDate)}</div></div><button class="btn gray" id="bOdo" style="min-height:40px;font-size:15px">Update</button></div>
- <div style="margin-top:14px"><div style="display:flex;justify-content:space-between"><span>Oil change</span><span class="k">${fmt(oilS-o)} mi left</span></div>${bar(o-c.lastOil,c.oilSevere)}<div class="k">Due ${fmt(oilS)} (short trips/winter) or ${fmt(oilN)} (normal)</div></div>
- <div style="margin-top:12px"><div style="display:flex;justify-content:space-between"><span>Tire rotation</span><span class="k">${fmt(rot-o)} mi left</span></div>${bar(o-c.lastRot,c.rot)}<div class="k">Due ${fmt(rot)} · free at Discount Tire</div></div>
- <div class="advice" style="margin-top:14px"><div class="dot" style="background:${warn.length?'var(--orange)':'var(--green)'}">${ico('flag')}</div><div><b>Round trip ≈ ${fmt(rt)} mi</b><span>Ends near ${fmt(after)}: ${warn.length?esc(warn.join(' and '))+'.':'no service due.'}</span></div></div>
- <details style="margin-top:6px"><summary>Car specs (locked)</summary><table>${[['Car',SPEC.car],['Engine',SPEC.engine],['Fuel tank',SPEC.tank+' gal'],['Full-tank range',m?'~'+fullR()+' mi · '+m.mpg.toFixed(1)+' mpg from your last '+m.n+' fill-up'+(m.n>1?'s':''):'~'+SPEC.fullRange+' mi (your usual). Learns from your fill-ups.'],['EPA mpg',SPEC.epa],['Fuel',SPEC.fuel],['Oil',SPEC.oil],['Tires',SPEC.tires+' · '+SPEC.psi+' psi cold']].map(r=>`<tr><td class="k" style="width:38%">${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')}</table></details>
- <div class="k" style="margin-top:6px">${c.pending.length?c.pending.length+' update'+(c.pending.length>1?'s':'')+' waiting for your Corolla tracker.</div><button class="btn fill" id="bCopy" style="width:100%;margin-top:10px">Copy updates for Claude</button>':'Corolla tracker is up to date'+(c.syncedAt?' (sent '+esc(c.syncedAt)+')':'')+'.</div>'}
- <a class="btn gray" style="width:100%;margin-top:12px" href="https://claude.ai/artifact/Xnb5kcXLefVEpkANUUeRRZ" target="_blank" rel="noopener">Open Corolla maintenance dashboard</a>`;
+ const C=carInfo(),c=S.car,rt=R.M*2,after=C.est+rt,m=mpgInfo();
+ const st=d=>d.left<0||d.daysLeft<0?['bad','Overdue'+(d.left<0?' by '+fmt(-d.left)+' mi':'')]:d.left<1000||d.daysLeft<30?['warn','Due soon · '+fmt(d.left)+' mi left']:['ok',fmt(d.left)+' mi to go'];
+ const soon=C.due.filter(d=>after>d.next).map(d=>d.item.split(' ·')[0].toLowerCase());
+ $('car').innerHTML=`<div class="carhero"><img src="car.jpg" alt="Blue 2014 Toyota Corolla S"><div class="carcap"><b>2014 Corolla S</b><span>Blue · 1.8L CVT</span></div></div>
+ <div class="stats" style="padding:14px 0 4px"><div><span class="k">Odometer today</span><b>${fmt(C.est)}</b><span class="k">estimated</span></div><div><span class="k">Last reading</span><b>${fmt(C.last.odometer)}</b><span class="k">${esc(fd(C.last.date))}</span></div><div><span class="k">Per month</span><b>${fmt(C.perMonth)}</b><span class="k">miles avg</span></div></div>
+ <div class="btns"><button class="btn gray" id="bOdo">Update odometer</button><button class="btn fill" id="bSvc">Log service</button></div>`;
+ $('due').innerHTML=C.due.map(d=>{const [cl,tx]=st(d),p=Math.max(0,Math.min(100,(C.est-d.lastMi)/d.miles*100));
+  return `<div class="duecard"><div class="k">${esc(d.item)}</div><div class="stat">${fmt(d.next)} <small class="k">mi</small></div><div class="${cl}" style="font-weight:600;font-size:15px">${esc(tx)}</div><div class="meter"><i class="${p>90?'r':p>70?'w':''}" style="width:${p}%"></i></div><div class="k">Every ${fmt(d.miles)} mi or ${d.months} mo · or by ${esc(fd(d.nextDate))}</div></div>`}).join('')+
+  `<div class="advice" style="margin:0;grid-column:1/-1"><div class="dot" style="background:${soon.length?'var(--orange)':'var(--green)'}">${ico('flag')}</div><div><b>${esc(R.dest.name)} round trip ≈ ${fmt(rt)} mi</b><span>Ends near ${fmt(after)}: ${soon.length?'you’ll pass the '+esc(soon.join(' and '))+' mark.':'no service comes due.'}</span></div></div>`;
+ drawMiles(C);
+ $('hist').innerHTML=C.H.slice().reverse().map((h,i)=>`<div class="row" style="cursor:default"><span class="ic" style="background:${h.kind==='Oil'?'#ff9500':h.kind==='Tires'||h.kind==='Rotation'?'#5856d6':h.kind==='Reading'?'#8e8e93':'#34c759'}">${ico(h.kind==='Oil'?'gas':h.kind==='Reading'?'flag':'sight')}</span><span class="tx"><b>${esc(h.service)}</b><span>${esc(fd(h.date))}${h.note?' · '+esc(h.note):''}</span></span><span class="rt"><b>${fmt(h.odometer)}</b><span>mi</span></span></div>`).join('');
+ $('specs').innerHTML=[['Car',SPEC.car],['Engine',SPEC.engine],['Fuel tank',SPEC.tank+' gal'],['Full-tank range',m?'~'+fullR()+' mi · '+m.mpg.toFixed(1)+' mpg from your last '+m.n+' fill-up'+(m.n>1?'s':''):'~'+SPEC.fullRange+' mi (your usual)'],['EPA mpg',SPEC.epa],['Fuel',SPEC.fuel],['Oil',SPEC.oil],['Tires','Continental '+SPEC.tires+' 91W M+S · '+SPEC.psi+' psi cold']].map(r=>`<tr><td class="k" style="width:36%">${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('');
+ $('syncBox').innerHTML=c.pending.length?`<div class="k">${c.pending.length} update${c.pending.length>1?'s':''} not yet in your Apple Note.</div><button class="btn fill" id="bCopy" style="width:100%;margin-top:10px">Copy updates for Claude</button>`:`<div class="k">Everything here is also in your Apple Note${c.syncedAt?' (sent '+esc(c.syncedAt)+')':''}.</div>`;
  if($('bCopy'))$('bCopy').onclick=copyForClaude;
- $('bOdo').onclick=()=>sheet('Odometer','Saved here and queued for your Corolla tracker.',[{id:'odo',label:'Odometer (mi)',type:'number',value:S.car.odometer}],v=>{const n=+v.odo;if(!n)return;S.car.odometer=n;S.car.odoDate=today();S.car.pending.push({date:today(),odometer:n,kind:'Reading',service:'Odometer reading',note:'From road trip app'});save('car');render()});
+ $('bOdo').onclick=()=>sheet('Odometer','What does the odometer say right now?',[{id:'odo',label:'Odometer (mi)',type:'number',value:C.est}],v=>{const n=+v.odo;if(!n)return;addHistory({date:today(),odometer:n,kind:'Reading',service:'Odometer reading',note:''});render()});
+ $('bSvc').onclick=()=>sheet('Log service','',[{id:'kind',label:'What was done',type:'select',value:'Oil',opts:[['Oil','Oil change'],['Rotation','Tire rotation'],['Tires','New tires'],['Other','Other service']]},{id:'odo',label:'Odometer',type:'number',value:C.est},{id:'date',label:'Date',type:'date',value:today()},{id:'note',label:'Note (optional)',ph:'e.g. full synthetic, Discount Tire'}],v=>{
+  const n=+v.odo;if(!n)return;const names={Oil:'Oil change',Rotation:'Tire rotation & balance',Tires:'New tires',Other:'Service'};
+  addHistory({date:v.date||today(),odometer:n,kind:v.kind,service:names[v.kind]+(v.note?', '+v.note.trim():''),note:''});render()});
 }
+function drawMiles(C){const el=$('miles'),W=el.clientWidth||340,H=220,pad={l:44,r:10,t:12,b:26};
+ const pts=C.H.map(h=>({t:Date.parse(h.date+'T12:00:00'),m:h.odometer})),now=Date.now();
+ const end=Math.max(now,...C.due.map(d=>+d.nextDate)),t0=pts[0].t;
+ const proj={t:end,m:C.last.odometer+C.perDay*((end-Date.parse(C.last.date))/864e5)};
+ const lo=Math.min(...pts.map(p=>p.m))-1000,hi=Math.max(proj.m,...C.due.map(d=>d.next))+800;
+ const X=t=>pad.l+(t-t0)/(end-t0)*(W-pad.l-pad.r),Y=m=>H-pad.b-(m-lo)/(hi-lo)*(H-pad.t-pad.b);
+ let h='';for(let i=0;i<=4;i++){const m=lo+(hi-lo)*i/4;h+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${Y(m)}" y2="${Y(m)}" stroke="var(--sep)"/><text x="${pad.l-6}" y="${Y(m)+4}" text-anchor="end" font-size="11" fill="var(--ink2)">${Math.round(m/1000)}k</text>`}
+ const mo=new Date(t0);mo.setDate(1);while(+mo<=end){const x=X(+mo);if(x>pad.l+4&&mo.getMonth()%2===0)h+=`<text x="${x}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--ink2)">${mo.toLocaleDateString([],{month:'short'})}</text>`;mo.setMonth(mo.getMonth()+1)}
+ const col={rot:'#5856d6',oilS:'#ff9500',oilN:'#ffcc00'};
+ for(const d of C.due)h+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${Y(d.next)}" y2="${Y(d.next)}" stroke="${col[d.key]}" stroke-dasharray="4 4" stroke-width="1.5"/>`;
+ h+=`<line x1="${X(Date.parse(C.last.date+'T12:00:00'))}" y1="${Y(C.last.odometer)}" x2="${X(proj.t)}" y2="${Y(proj.m)}" stroke="var(--blue)" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" opacity=".7"/>`;
+ h+=`<polyline points="${pts.map(p=>X(p.t).toFixed(1)+','+Y(p.m).toFixed(1)).join(' ')}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/>`;
+ h+=pts.map(p=>`<circle cx="${X(p.t)}" cy="${Y(p.m)}" r="3.5" fill="var(--blue)"/>`).join('');
+ h+=`<line x1="${X(now)}" x2="${X(now)}" y1="${pad.t}" y2="${H-pad.b}" stroke="var(--ink2)" stroke-dasharray="1 3"/><circle cx="${X(now)}" cy="${Y(C.est)}" r="5" fill="var(--card)" stroke="var(--blue)" stroke-width="2.5"/><text x="${X(now)-6}" y="${Y(C.est)-10}" text-anchor="end" font-size="11" font-weight="600" fill="var(--ink)">Today ≈ ${fmt(C.est)}</text>`;
+ el.setAttribute('viewBox',`0 0 ${W} ${H}`);el.innerHTML=h;
+ $('milesKey').innerHTML=C.due.map(d=>`<span><i style="background:${col[d.key]}"></i>${esc(d.item.replace('Oil change · ','Oil · ').replace(' & balance',''))} ${fmt(d.next)}</span>`).join('')}
 function renderChecks(R){
  const L=[['tires','Tire pressure: '+SPEC.psi+' psi cold, front & rear'],['fluids','Washer fluid & wipers'],['road','Road conditions checked'],['kit','Water, snacks, blanket, charger'],['tell','Sent ETA to family']];
  $('checks').innerHTML=L.map(([k,l])=>`<label class="chk"><input type="checkbox" data-c="${k}" ${S.trip.checks[k]?'checked':''}>${esc(l)}</label>`).join('');
@@ -567,7 +631,7 @@ function fillAt(m,name,sid){const t=S.trip,full=fullR();
   t.range=+v.range||full;t.rangePos=m;t.pos=Math.max(t.pos||0,m);t.posAt=new Date().toISOString();
   if(+v.price&&sid)t.prices[sid]={p:+v.price,at:new Date().toISOString()};
   if(t.active)t.active.fuel.push({place:name||('mile '+m),gal:+v.gal||0,price:+v.price||0,odo:+v.odo||null,at:new Date().toISOString()});
-  if(+v.odo){S.car.odometer=+v.odo;S.car.odoDate=today();save('car')}
+  if(+v.odo){addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at fill-up',note:name||''})}
   if(+v.odo&&+v.gal){S.log.fills=(S.log.fills||[]).concat([{odo:+v.odo,gal:+v.gal,price:+v.price||0,at:new Date().toISOString()}]).slice(-40);save('log')}
   save('trip');render()})}
 function stopSheet(s){const t=S.trip,R=route();
@@ -643,14 +707,14 @@ for(const i of ['rIn','dIn'])$(i+'F').addEventListener('submit',e=>{e.preventDef
 $('bTime').onclick=timing;$('bShare').onclick=shareTrip;$('bAdd').onclick=addStop;$('dHere').onclick=herePick;
 $('dFill').onclick=()=>{const R=route(),F=fuel(R),near=R.st.filter(s=>s.kind==='gas').reduce((b,s)=>!b||Math.abs(s.m-(F.pos||0))<Math.abs(b.m-(F.pos||0))?s:b,null);fillAt(F.pos||0,near&&Math.abs(near.m-(F.pos||0))<15?near.name:'',near&&Math.abs(near.m-(F.pos||0))<15?near.id:null)};
 $('bTrip').onclick=()=>{const t=S.trip,R=route();
- if(!t.active){sheet('Start trip','Logs miles and gas for this drive.',[{id:'odo',label:'Odometer now',type:'number',value:S.car.odometer}],v=>{
-  t.active={startOdo:+v.odo||S.car.odometer,startAt:new Date().toISOString(),name:R.back?R.b.name+' → Home':'Home → '+R.dest.name,fuel:[]};t.pos=0;t.posAt=new Date().toISOString();t.rangePos=0;
-  S.car.odometer=t.active.startOdo;S.car.odoDate=today();t.view='drive';save('car');save('trip');render()})}
+ if(!t.active){sheet('Start trip','Logs miles and gas for this drive.',[{id:'odo',label:'Odometer now',type:'number',value:carInfo().est}],v=>{
+  t.active={startOdo:+v.odo||carInfo().est,startAt:new Date().toISOString(),name:R.back?R.b.name+' → Home':'Home → '+R.dest.name,fuel:[]};t.pos=0;t.posAt=new Date().toISOString();t.rangePos=0;
+  if(+v.odo)addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at trip start',note:t.active.name});t.view='drive';save('trip');render()})}
  else{const a=t.active;sheet('End trip','Saves the trip and queues the miles for your Corolla tracker.',[{id:'odo',label:'Odometer now',type:'number',value:a.startOdo+Math.round(t.pos||R.M)}],v=>{
   const end=+v.odo||a.startOdo,miles=end-a.startOdo,gal=a.fuel.reduce((s,f)=>s+(+f.gal||0),0),cost=a.fuel.reduce((s,f)=>s+(+f.gal||0)*(+f.price||0),0);
   const f=a.fuel.filter(x=>x.odo&&x.gal).sort((x,y)=>x.odo-y.odo);let mi=0,gg=0;for(let i=1;i<f.length;i++){mi+=f[i].odo-f[i-1].odo;gg+=f[i].gal}
   S.log.trips.push({date:today(),name:a.name,startOdo:a.startOdo,endOdo:end,miles,gal:+gal.toFixed(2),cost:+cost.toFixed(2),mpg:gg?mi/gg:null,fuel:a.fuel});
-  S.car.odometer=end;S.car.odoDate=today();S.car.pending.push({date:today(),odometer:end,kind:'Reading',service:'Road trip: '+a.name,note:miles+' mi'+(gal?', '+gal.toFixed(1)+' gal':'')});
+  addHistory({date:today(),odometer:end,kind:'Reading',service:'Road trip: '+a.name,note:miles+' mi'+(gal?', '+gal.toFixed(1)+' gal':'')});
   t.active=null;t.pos=0;t.posAt=null;t.checks={};t.view='trip';save('log');save('car');save('trip');render()})}};
 $('bNewRoute').onclick=()=>sheet('New trip preset','For any other drive from home. Add stops to it after.',[{id:'name',label:'Name',ph:'e.g. Grandma’s house'},{id:'sub',label:'City, state',ph:'e.g. St. George, UT'},{id:'addr',label:'Address'},{id:'miles',label:'Miles from home (one way)',type:'number'},{id:'hrs',label:'Drive time (hours)',type:'number',ph:'e.g. 3.75'}],v=>{
  if(!v.name||!+v.miles)return;const id='r'+Date.now().toString(36);S.custom.routes.push({id,name:v.name.trim(),sub:v.sub.trim(),addr:v.addr.trim()||v.sub.trim(),miles:+v.miles,min:Math.round((+v.hrs||(+v.miles/62))*60)});S.trip.route=id;save('custom');save('trip');render()});
