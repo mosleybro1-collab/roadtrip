@@ -31,12 +31,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.35 -apple-system
 .wrap{padding:6px 16px calc(40px + env(safe-area-inset-bottom))}
 .toprow{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--card2);border-radius:9px;padding:2px;gap:2px}
-.seg button{border:0;background:transparent;color:var(--ink);font:600 14px/1 inherit;font-family:inherit;min-height:34px;border-radius:7px;padding:0 10px;cursor:pointer}
+.seg button{border:0;background:transparent;color:var(--ink);font:600 14px/1 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;min-height:34px;border-radius:7px;padding:0 10px;cursor:pointer}
 .seg button[aria-pressed=true]{background:light-dark(#fff,#636366);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 .title{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:10px 0 2px}
 .sub{color:var(--ink2);font-size:15px}
 .pills{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}.pills::-webkit-scrollbar{display:none}
-.pill{flex:none;border:0;background:var(--card2);color:var(--ink);font:500 15px inherit;font-family:inherit;border-radius:999px;padding:0 14px;min-height:36px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.pill{flex:none;border:0;background:var(--card2);color:var(--ink);font:500 15px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;border-radius:999px;padding:0 14px;min-height:36px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .pill[aria-pressed=true]{background:var(--blue);color:#fff}
 .icon{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .hdr{font-size:13px;color:var(--ink2);text-transform:none;margin:26px 16px 7px;font-weight:400}
@@ -49,17 +49,17 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.35 -apple-system
 .mid{font-size:15px;color:var(--ink2);margin-top:2px}
 .rbox{margin-top:16px}.rbox label{display:block;font-size:13px;color:var(--ink2);margin-bottom:6px}
 .rrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-.rrow input{width:100%;border:0;border-radius:12px;background:var(--card2);color:var(--ink);font:700 28px inherit;font-family:inherit;padding:0 14px;min-height:56px;font-variant-numeric:tabular-nums}
+.rrow input{width:100%;border:0;border-radius:12px;background:var(--card2);color:var(--ink);font:700 28px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;padding:0 14px;min-height:56px;font-variant-numeric:tabular-nums}
 .rrow .btn{min-height:56px;padding:0 22px}
 #driveV .rbox{margin-top:0}
 .mapc{padding:8px}
 .mapw{position:relative;height:340px;border-radius:12px;overflow:hidden;background:light-dark(#dfe7ef,#0e1a24);touch-action:none;cursor:grab}
 #map{width:100%;height:100%;display:block}
 .mapbtn{position:absolute;right:8px;top:8px;display:grid;gap:1px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.25)}
-.mapbtn button{border:0;width:44px;height:44px;background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--ink);font:500 22px inherit;font-family:inherit;cursor:pointer}
+.mapbtn button{border:0;width:44px;height:44px;background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--ink);font:500 22px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;cursor:pointer}
 #map text{font-family:inherit;paint-order:stroke;stroke:light-dark(#fff,#000);stroke-width:3px;stroke-linejoin:round}
 .gauge{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:14px}
-.gauge button{border:0;background:var(--card2);color:var(--ink);font:600 17px inherit;font-family:inherit;min-height:44px;border-radius:10px;cursor:pointer}
+.gauge button{border:0;background:var(--card2);color:var(--ink);font:600 17px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;min-height:44px;border-radius:10px;cursor:pointer}
 .gauge button.on{background:var(--blue);color:#fff}
 .advice{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:12px;border-radius:12px;background:var(--card2)}
 .dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;color:#fff}
@@ -83,7 +83,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.35 -apple-system
 .chev{color:var(--ink2);opacity:.5;font-size:20px}
 .tag{font-size:12px;font-weight:600;border-radius:5px;padding:1px 6px;margin-left:6px;background:var(--card2);color:var(--ink2);vertical-align:1px}
 .btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
-.btn{border:0;border-radius:14px;min-height:50px;font:600 17px inherit;font-family:inherit;background:var(--card);color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:0 14px}
+.btn{border:0;border-radius:14px;min-height:50px;font:600 17px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;background:var(--card);color:var(--blue);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:0 14px}
 .btn.fill{background:var(--blue);color:#fff}.btn.gray{background:var(--card2);color:var(--ink)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .meter{height:6px;border-radius:3px;background:var(--card2);overflow:hidden;margin:8px 0 4px}.meter i{display:block;height:100%;border-radius:3px;background:var(--green)}
@@ -98,11 +98,11 @@ details summary{list-style:none;cursor:pointer;color:var(--blue);font-weight:500
 .chk input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--ink2);margin:0;flex:none;display:grid;place-items:center}
 .chk input:checked{background:var(--green);border-color:var(--green)}.chk input:checked:after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
 .field{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;min-height:52px;gap:12px;position:relative}.field+.field:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
-.field input{width:110px;text-align:right;border:0;background:transparent;color:var(--blue);font:17px inherit;font-family:inherit;min-height:40px}
+.field input{width:110px;text-align:right;border:0;background:transparent;color:var(--blue);font-size:17px;font-family:inherit;min-height:40px}
 /* Drive tab */
 .drive .huge{font-size:clamp(44px,15vw,72px);font-weight:700;letter-spacing:-.03em;line-height:1}
 .drive .card{padding:20px}.drive .k{font-size:15px}
-.dbtn{border:0;border-radius:18px;min-height:76px;font:700 22px inherit;font-family:inherit;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+.dbtn{border:0;border-radius:18px;min-height:76px;font:700 22px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
 .dbtn .icon{width:26px;height:26px}
 /* Sheet */
 .sheet{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-end;justify-content:center;z-index:20}
@@ -112,7 +112,7 @@ details summary{list-style:none;cursor:pointer;color:var(--blue);font-weight:500
 .sheet h3{margin:0;font-size:20px;font-weight:700;text-align:center}.sheet .s{color:var(--ink2);font-size:14px;text-align:center;margin:4px 0 12px}
 .form{background:var(--card);border-radius:12px;overflow:hidden}
 .form label{display:block;padding:10px 16px 0;font-size:13px;color:var(--ink2)}
-.form input,.form select{width:100%;border:0;background:transparent;color:var(--ink);font:17px inherit;font-family:inherit;padding:4px 16px 12px;min-height:44px;border-bottom:.5px solid var(--sep)}
+.form input,.form select{width:100%;border:0;background:transparent;color:var(--ink);font-size:17px;font-family:inherit;padding:4px 16px 12px;min-height:44px;border-bottom:.5px solid var(--sep)}
 .form .last input,.form .last select{border-bottom:0}
 .choices{display:grid;gap:8px}.choice{border:0;border-radius:12px;background:var(--card);color:var(--ink);text-align:left;padding:12px 16px;min-height:56px;font:inherit;cursor:pointer}.choice b{display:block;font-weight:600}.choice span{font-size:14px;color:var(--ink2)}
 .sync{font-size:12px;color:var(--ink2);text-align:center;margin-top:18px}
@@ -127,7 +127,7 @@ button:active,.btn:active,.row:active,.choice:active,.dbtn:active,.pill:active{t
 .nav.compact .title{font-size:22px;margin-top:6px}.nav.compact .sub{opacity:0;height:0;overflow:hidden}
 .wrap{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--sep);padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
-.tabbar button{border:0;background:transparent;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:2px;font:500 11px inherit;font-family:inherit;min-height:50px;cursor:pointer}
+.tabbar button{border:0;background:transparent;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:2px;font:500 11px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;min-height:50px;cursor:pointer}
 .tabbar button .icon{width:26px;height:26px}
 .tabbar button[aria-selected=true]{color:var(--blue)}
 #mapV .mapw{height:calc(100dvh - var(--navh,190px) - 150px - env(safe-area-inset-bottom));min-height:320px;margin-top:12px;border-radius:16px}
@@ -140,7 +140,7 @@ button:active,.btn:active,.row:active,.choice:active,.dbtn:active,.pill:active{t
 .title{margin:0;font-size:34px;font-weight:700;letter-spacing:.01em}
 .toprow{align-items:flex-end}
 .sub{margin-top:2px;font-size:15px}
-.dirbtn{border:0;background:var(--card);color:var(--blue);font:600 15px inherit;font-family:inherit;border-radius:999px;min-height:36px;padding:0 12px 0 10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:4px}
+.dirbtn{border:0;background:var(--card);color:var(--blue);font:600 15px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;border-radius:999px;min-height:36px;padding:0 12px 0 10px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:4px}
 .dirbtn .icon{width:18px;height:18px}
 .pill{background:var(--card);font-weight:500}
 .seg{background:light-dark(#e3e3e8,#1c1c1e)}
@@ -183,6 +183,26 @@ a.row{color:inherit}
 .nav .title{font-size:32px}
 :root,:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
 html,body{background:#000}
+.banner{margin-top:14px;border-radius:14px;padding:14px 16px;font-weight:700;font-size:18px;line-height:1.3;color:#fff}
+.banner.orange{background:#c96a00}.banner.red{background:#d70015;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.75}}
+#dNextCard.alert{box-shadow:0 0 0 3px #ff453a inset}
+.gpsrow{display:flex;gap:12px;align-items:center;width:100%;margin-top:12px;border:0;border-radius:14px;background:var(--card);color:var(--ink);padding:12px 16px;min-height:60px;text-align:left;font:inherit;cursor:pointer}
+.gpsrow b{display:block;font-weight:600}.gpsrow small{display:block;font-size:13px;color:var(--ink2)}
+.dot2{width:12px;height:12px;border-radius:50%;background:#636366;flex:none}.dot2.on{background:#30d158;box-shadow:0 0 0 4px rgba(48,209,88,.25)}.dot2.wait{background:#ff9f0a}
+.tabbar button{position:relative}.tabbar button.badge:after{content:"";position:absolute;top:4px;left:calc(50% + 8px);width:10px;height:10px;border-radius:50%;background:#ff453a;border:2px solid #000}
+.fold summary{list-style:none}.fold summary::-webkit-details-marker{display:none}.fold[open] .chev{transform:rotate(90deg)}.fold .chev{transition:transform .2s}
+.fold+.fold summary:before{content:"";position:absolute;top:0;left:62px;right:0;border-top:.5px solid var(--sep)}
+.foldin{padding:4px 16px 14px}
+.sw{appearance:none;-webkit-appearance:none;width:51px!important;height:31px;min-height:0!important;border-radius:16px;background:#39393d;position:relative;cursor:pointer;flex:none;transition:background .2s}
+.sw:after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s}
+.sw:checked{background:#30d158}.sw:checked:after{left:22px}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#2c2c2e;color:#fff;border-radius:14px;padding:10px 10px 10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.5);transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s;max-width:560px;margin:0 auto}
+.toast.on{transform:none;opacity:1;pointer-events:auto}
+.toast button{border:0;background:transparent;color:#0a84ff;font:600 17px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-family:inherit;min-height:40px;padding:0 10px;cursor:pointer}
+html.big body{zoom:1.15}
+.field .sw{background:#39393d;width:51px;min-height:0}.field .sw:checked{background:#30d158}
+.form input[type=date],.form input[type=time]{font-size:22px;font-weight:600;color:var(--blue)}
 </style>
 </head>
 <body>
@@ -227,6 +247,7 @@ html,body{background:#000}
 
   <div class="hdr" id="stopsHdr">Exits &amp; stops</div>
   <div class="list" id="exits"></div>
+  <button class="btn" id="bAll" style="width:100%;margin-top:10px"></button>
   <div class="btns" style="grid-template-columns:1fr"><button class="btn" id="bAdd"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add a stop</button></div>
   <p class="note">Paste a Google or Apple Maps link to add a stop, or pick the nearest exit. Miles are approximate from your door; tap Google Maps for live traffic with your stops.</p>
 
@@ -248,15 +269,18 @@ html,body{background:#000}
   <div class="duegrid" id="due"></div>
   <div class="hdr">Mileage</div>
   <section class="card"><svg id="miles" style="width:100%;height:220px;display:block"></svg><div class="legend" id="milesKey" style="margin-top:8px"></div></section>
+  <div class="hdr">Gas spending</div>
+  <section class="card" id="spend"></section>
   <div class="hdr">Service history</div>
   <div class="list" id="hist"></div>
   <section class="card" id="syncBox"></section>
-  <div class="hdr">Car details</div>
-  <section class="card" style="padding:4px 16px"><table id="specs"></table></section>
-  <div class="hdr">Discount Tire</div>
-  <section class="card"><div class="k" style="margin-bottom:8px">Your tires were bought there, so these come free for the life of the tires:</div>
+  <div class="hdr">More about your car</div>
+  <div class="list">
+    <details class="fold"><summary class="row"><span class="ic" style="background:#8e8e93"><svg class="icon" viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3z"/></svg></span><span class="tx"><b>Car details</b><span>Engine, tank, oil, tires</span></span><span class="chev">›</span></summary><div class="foldin"><table id="specs"></table></div></details>
+    <details class="fold"><summary class="row"><span class="ic" style="background:#d70015"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></span><span class="tx"><b>Discount Tire</b><span>Free services with your tires</span></span><span class="chev">›</span></summary><div class="foldin"><div class="k" style="margin-bottom:8px">Your tires were bought there, so these come free for the life of the tires:</div>
     <div class="perks"><span>Rotation &amp; balancing</span><span>Flat repairs</span><span>Air checks</span><span>Tire inspections</span></div>
-    <div class="k" style="margin-top:10px">The purchase is on file under your dad’s email; give them that at the counter. Discount Tire suggests rotating every 6,000–8,000 mi; Toyota says every 5,000.</div></section>
+    <div class="k" style="margin-top:10px">The purchase is on file under your dad’s email; give them that at the counter. Discount Tire suggests rotating every 6,000–8,000 mi; Toyota says every 5,000.</div></div></details>
+  </div>
 
   <div class="hdr">Before you go</div>
   <div class="list" id="checks"></div>
@@ -269,6 +293,7 @@ html,body{background:#000}
   <div class="list">
     <div class="field"><span>Gas cushion (mi)</span><input id="sRes" type="number" inputmode="numeric" step="5"></div>
     <div class="field"><span>Average speed (mph)</span><input id="sSpd" type="number" inputmode="numeric" placeholder="Auto"></div>
+    <label class="field" style="cursor:pointer"><span>Larger text</span><input type="checkbox" class="sw" id="sBig"></label>
   </div>
   <div class="btns" style="grid-template-columns:1fr"><button class="btn" id="bNewRoute">New trip preset</button></div>
   <p class="note">Car specs are built in and locked. Gas prices are <span id="pAsOf">AAA state averages</span> until you enter a price you see at a station. Everything you enter stays on this phone. Gas stops count as 10 minutes.</p>
@@ -276,11 +301,14 @@ html,body{background:#000}
 </main>
 
 <main class="wrap drive" id="driveV" hidden>
-  <section class="card" style="margin-top:14px">
+  <div class="banner" id="dBanner" hidden></div>
+  <section class="card" style="margin-top:14px" id="dNextCard">
     <div class="k" id="dNextK">Next</div>
     <div class="huge" id="dNext">—</div>
     <div class="mid" style="font-size:19px;margin-top:6px" id="dNextSub"></div>
+    <a class="btn fill big" id="dNav" href="#" target="_blank" rel="noopener" style="width:100%;margin-top:14px"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11 21 3l-8 18-2-8z"/></svg><span id="dNavTx">Navigate</span></a>
   </section>
+  <button class="gpsrow" id="dGps"></button>
   <div class="btns">
     <section class="card" style="margin:0"><div class="k">Miles to empty</div><div class="huge" style="font-size:44px" id="dRange">—</div></section>
     <section class="card" style="margin:0"><div class="k">Arrive</div><div class="huge" style="font-size:clamp(26px,8.5vw,44px);white-space:nowrap" id="dEta">—</div><div class="mid" id="dEtaSub"></div></section>
@@ -290,7 +318,7 @@ html,body{background:#000}
     <button class="dbtn" id="dHere" style="background:var(--blue);color:#fff"><svg class="icon" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>I just passed…</button>
     <button class="dbtn" id="dFill" style="background:var(--card);color:var(--ink)"><svg class="icon" viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 21h13M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M7 7h5"/></svg>Filled up</button>
   </div>
-  <p class="note" style="text-align:center;margin-top:16px">Let a passenger tap, or tap while stopped.</p>
+  <p class="note" style="text-align:center;margin-top:16px" id="dNote">Let a passenger tap, or tap while stopped.</p>
 </main>
 
 <nav class="tabbar" id="tabbar">
@@ -299,6 +327,8 @@ html,body{background:#000}
   <button data-tab="drive"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v6.5M4.5 15.5l5.3-2.3M19.5 15.5l-5.3-2.3"/></svg><span>Drive</span></button>
   <button data-tab="car"><svg class="icon" viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7 19v2M17 19v2"/><circle cx="7.5" cy="13" r="1"/><circle cx="16.5" cy="13" r="1"/></svg><span>Car</span></button>
 </nav>
+
+<div class="toast" id="toast" role="status"></div>
 
 <div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="box"><div class="grab"></div><h3 id="shT"></h3><div class="s" id="shS"></div><form id="shF"></form></div></div>
 
@@ -351,7 +381,14 @@ const fmt=n=>Math.round(n).toLocaleString();
 const today=()=>new Date().toLocaleDateString('en-CA');
 const setSync=t=>{$('sync').textContent=t};
 const tm={};let chain=Promise.resolve();
-function save(k){try{localStorage.setItem('rt2_'+k,JSON.stringify(S[k]))}catch(e){setSync('Couldn’t save on this phone (private browsing?)')}}
+function quietSave(k){try{localStorage.setItem('rt2_'+k,JSON.stringify(S[k]))}catch(e){setSync('Couldn’t save on this phone (private browsing?)')}}
+const snap=()=>{const o=clone({trip:S.trip,custom:S.custom,log:S.log,car:S.car});delete o.trip.view;delete o.trip.showAll;delete o.trip.posAt;return JSON.stringify(o)};
+let preSnap=null,undoT=null,toastT=null;
+function save(k){quietSave(k);clearTimeout(undoT);undoT=setTimeout(offerUndo,60)}
+function offerUndo(){if(!preSnap)return;const now=snap();if(now===preSnap)return;const back=preSnap;preSnap=null;
+ const el=$('toast');el.innerHTML='<span>Change saved</span><button type="button">Undo</button>';el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),6000);
+ el.querySelector('button').onclick=()=>{const o=JSON.parse(back),view=S.trip.view;for(const k of ['trip','custom','log','car']){S[k]=Object.assign(clone(DEF[k]),o[k]);if(k==='trip')S.trip.view=view;quietSave(k)}el.classList.remove('on');render()}}
+for(const ev of ['click','submit','change'])document.addEventListener(ev,e=>{if(e.target.closest&&e.target.closest('#toast'))return;if(ev==='click'&&$('sheet').classList.contains('on')&&!e.target.closest('#shF'))return;preSnap=preSnap&&ev!=='click'?preSnap:snap()},true);
 
 /* ---------- route model ---------- */
 const allRoutes=()=>{const r=Object.assign({},BASE);for(const c of S.custom.routes)r[c.id]=Object.assign({stops:[],zones:[]},c);return r};
@@ -474,19 +511,24 @@ function render(){
  // exits list
  const fillIds=new Set(F.plan.map(s=>s.id));
  $('stopsHdr').textContent=t.mode==='direct'?'Exits · straight there (gas only)':'Exits & stops';
- $('exits').innerHTML=R.st.map(s=>{
+ const showAll=!!t.showAll,keep=s=>showAll||s.kind==='zone'||stops(s)||fillIds.has(s.id)||(s.custom&&s.on);
+ const hiddenN=R.st.filter(s=>!keep(s)).length;
+ $('exits').innerHTML=R.st.filter(keep).map(s=>{
   if(s.kind==='zone')return `<div class="row zone">${esc(s.name)}</div>`;
   const past=s.m<(F.pos||0)-0.5,out=F.set&&s.m>F.reach&&(!F.plan.length||F.state==='out'),rec=fillIds.has(s.id),pr=s.kind==='gas'?priceOf(s):null,skip=s.kind!=='gas'&&s.on&&t.mode==='direct';
   const sub=[past?'mile '+s.m+' · passed':fmt(s.m-(F.pos||0))+' mi ahead',pr?'$'+pr.p.toFixed(2)+(pr.seen?' seen':' '+s.st+' avg'):'',stops(s)?'stop '+hm(s.mins):'',skip?'skipped':'',rec?'fill up here':'',out&&!past?'past your range':'',s.note||''].filter(Boolean).join(' · ');
   return `<button class="row ${past?'past':''} ${skip?'skip':''} ${rec?'rec':''}" data-s="${esc(s.id)}"><span class="ic" style="background:${KC[s.kind]||KC.flag}">${ico(s.kind)}</span><span class="tx"><b class="${out&&!past?'bad':''}">${esc(s.name)}</b><span>${esc(sub)}</span></span><span class="rt"><b>${past?'—':tf(T[s.id],s.tz)}</b><span>${ZN[s.tz]&&!past?esc(ZN[s.tz].split(' ')[0]):''}</span></span><span class="chev">›</span></button>`}).join('')+
   `<div class="row" style="cursor:default"><span class="ic" style="background:var(--blue)">${ico('flag')}</span><span class="tx"><b>${esc(R.dest.name)}</b><span>${esc(R.dest.addr)}</span></span><span class="rt"><b>${tf(T._dest,R.dest.tz)}</b><span>${esc(zn?zn.split(' ')[0]:'')}</span></span></div>`;
+ $('bAll').textContent=showAll?'Show only my stops':'Show all exits ('+hiddenN+' more)';$('bAll').hidden=!showAll&&!hiddenN;
  // maps
  const wp=t.mode==='direct'?[]:R.st.filter(s=>stops(s)&&(s.addr||s.near)&&s.m>(F.pos||0)).map(s=>s.addr||(s.name+', '+s.near));
  $('gmaps').href='https://www.google.com/maps/dir/?api=1&travelmode=driving&origin='+encodeURIComponent(T._live&&t.pos>0?'Current Location':R.origin.addr)+'&destination='+encodeURIComponent(R.dest.addr)+(wp.length?'&waypoints='+encodeURIComponent(wp.join('|')):'');
  $('amaps').href='https://maps.apple.com/?dirflg=d&daddr='+encodeURIComponent(R.dest.addr);
  $('bTrip').textContent=t.active?'End trip':'Start trip';$('bTrip').className='btn big '+(t.active?'danger':'fill');
- if(!drive)drawMap(R,F);renderDrive(R,F,T);renderCar(R);$('pAsOf').textContent=(S.prices.source||'state averages')+' from '+(S.prices.asOf||'—')+' (UT $'+(+S.prices.UT).toFixed(2)+', NV $'+(+S.prices.NV).toFixed(2)+', AZ $'+(+S.prices.AZ).toFixed(2)+', ID $'+(+S.prices.ID).toFixed(2)+')';renderChecks(R);renderLog();
- if(document.activeElement!==$('sRes'))$('sRes').value=t.reserve;if(document.activeElement!==$('sSpd'))$('sSpd').value=t.speed||'';
+ if(!drive)drawMap(R,F);renderDrive(R,F,T);renderCar(R);keepAwake();document.documentElement.classList.toggle('big',!!t.big);
+ {const C=carInfo(),hot=C.due.some(d=>d.left<500||d.daysLeft<14);document.querySelector('[data-tab=car]').classList.toggle('badge',hot)}
+$('pAsOf').textContent=(S.prices.source||'state averages')+' from '+(S.prices.asOf||'—')+' (UT $'+(+S.prices.UT).toFixed(2)+', NV $'+(+S.prices.NV).toFixed(2)+', AZ $'+(+S.prices.AZ).toFixed(2)+', ID $'+(+S.prices.ID).toFixed(2)+')';renderChecks(R);renderLog();
+ $('sBig').checked=!!t.big;if(document.activeElement!==$('sRes'))$('sRes').value=t.reserve;if(document.activeElement!==$('sSpd'))$('sSpd').value=t.speed||'';
 }
 /* ---------- map ---------- */
 const STATES={UT:[[-114.05,42],[-111.05,42],[-111.05,41],[-109.05,41],[-109.05,37],[-114.05,37]],
@@ -549,7 +591,36 @@ function renderDrive(R,F,T){
  else{$('dNextK').textContent='Next';$('dNext').textContent=fmt(R.M-pos)+' mi';$('dNextSub').textContent='to '+R.dest.name+(F.state==='ok'?' · no gas needed':'')}
  $('dRange').textContent=F.set?fmt(F.left):'—';$('dRange').className='huge '+(!F.set?'':F.left<60?'bad':F.left<120?'warn':'');
  $('dEta').textContent=tf(T._dest,R.dest.tz);$('dEtaSub').textContent=ZN[R.dest.tz]||'';
+ // navigate target
+ const tgt=nxt||null,ll=tgt&&tgt.ll,dest=tgt?(tgt.addr||(ll?ll.join(','):tgt.name)):R.dest.addr;
+ $('dNav').href='https://maps.apple.com/?dirflg=d&daddr='+encodeURIComponent(tgt&&!tgt.addr&&ll?ll.join(','):dest)+(tgt&&tgt.kind==='gas'&&!tgt.addr?'&q='+encodeURIComponent('Gas near '+tgt.name):'');
+ $('dNavTx').textContent='Navigate to '+(tgt?(tgt.kind==='gas'?'gas in ':'')+tgt.name.replace(/ \(.*\)/,''):R.dest.name);
+ // fuel banner
+ const b=$('dBanner');let bt='',bc='';
+ if(F.set&&(F.state==='out')){bc='red';bt='⚠︎ Not enough fuel to reach the next gas station. Slow down and find gas now.'}
+ else if(F.set&&F.state==='tight'&&F.rec){bc='red';bt='Get gas at '+F.rec.name+' ('+fmt(F.rec.m-pos)+' mi). Don’t pass it.'}
+ else if(F.set&&F.state==='plan'&&F.rec&&F.rec.m-pos<=25){bc='orange';bt='Fill up soon: '+F.rec.name+' in '+fmt(F.rec.m-pos)+' mi'}
+ else if(F.set&&F.left<80){bc='orange';bt='Low fuel: about '+fmt(F.left)+' mi left'}
+ b.hidden=!bt;b.className='banner '+bc;b.textContent=bt;$('dNextCard').classList.toggle('alert',bc==='red');
+ // gps row
+ const g=$('dGps'),on=!!S.trip.gps;
+ g.innerHTML=`<span class="dot2 ${on&&GPS.ok?'on':on?'wait':''}"></span><span><b>${on?(GPS.ok?'Location on':'Finding your location…'):'Location off'}</b><small>${on?(GPS.ok?'Your spot on the route updates by itself'+(GPS.off>8?' · you’re ~'+Math.round(GPS.off)+' mi off the route':''):GPS.err||'Allow location when your iPhone asks'):'Tap to turn on automatic location'}</small></span>`;
+ $('dNote').textContent=on&&GPS.ok?'Screen stays on while you’re on this tab.':'Let a passenger tap, or tap while stopped.';
 }
+/* ---------- GPS + keep awake ---------- */
+const GPS={id:null,ok:false,err:'',off:0,last:0};
+function startGPS(){if(GPS.id!==null||!('geolocation' in navigator)){if(!('geolocation' in navigator))GPS.err='This phone can’t share location here';return}
+ GPS.id=navigator.geolocation.watchPosition(p=>{GPS.ok=true;GPS.err='';const R=route(),ll=[p.coords.latitude,p.coords.longitude],m=mileFor(R,ll);
+  if(m==null)return;// distance from route (rough)
+  const pt=(()=>{const pts=[{m:0,ll:R.back?R.b.ll:HOME.ll}].concat(R.st.filter(s=>s.ll).map(s=>({m:s.m,ll:s.ll})),[{m:R.M,ll:R.back?HOME.ll:R.b.ll}]).sort((a,b)=>a.m-b.m);let i=pts.findIndex(x=>x.m>=m);if(i<1)i=1;const a=pts[i-1],c=pts[i],f=(m-a.m)/((c.m-a.m)||1);return[a.ll[0]+(c.ll[0]-a.ll[0])*f,a.ll[1]+(c.ll[1]-a.ll[1])*f]})();
+  GPS.off=Math.hypot((pt[0]-ll[0])*69,(pt[1]-ll[1])*69*Math.cos(ll[0]*Math.PI/180));
+  const t=S.trip;if(GPS.off<25&&(Math.abs(m-(t.pos||0))>=1||Date.now()-GPS.last>60000)){t.pos=Math.max(0,Math.min(R.M,m));t.posAt=new Date().toISOString();GPS.last=Date.now();quietSave('trip')}
+  if(!$('sheet').classList.contains('on'))render()},e=>{GPS.ok=false;GPS.err=e.code===1?'Location is blocked. Turn it on in Settings → Privacy → Location Services → Safari Websites.':'Can’t get your location right now';render()},{enableHighAccuracy:true,maximumAge:15000,timeout:30000})}
+function stopGPS(){if(GPS.id!==null){navigator.geolocation.clearWatch(GPS.id);GPS.id=null;GPS.ok=false}}
+let wake=null;
+async function keepAwake(){try{const want=S.trip.view==='drive'&&!document.hidden;if(want&&!wake&&navigator.wakeLock){wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>{wake=null})}else if(!want&&wake){await wake.release();wake=null}}catch(e){}}
+document.addEventListener('visibilitychange',keepAwake);
+
 const INTV=[{key:'rot',item:'Tire rotation & balance',kinds:['Tires','Rotation'],miles:5000,months:6,note:'Free at Discount Tire'},
  {key:'oilS',item:'Oil change · short trips/winter',kinds:['Oil'],miles:5000,months:6,note:'Toyota severe schedule, 0W-20'},
  {key:'oilN',item:'Oil change · normal driving',kinds:['Oil'],miles:10000,months:12,note:'Toyota normal schedule, 0W-20'}];
@@ -576,6 +647,8 @@ function renderCar(R){
   `<div class="advice" style="margin:0;grid-column:1/-1"><div class="dot" style="background:${soon.length?'var(--orange)':'var(--green)'}">${ico('flag')}</div><div><b>${esc(R.dest.name)} round trip ≈ ${fmt(rt)} mi</b><span>Ends near ${fmt(after)}: ${soon.length?'you’ll pass the '+esc(soon.join(' and '))+' mark.':'no service comes due.'}</span></div></div>`;
  drawMiles(C);
  $('hist').innerHTML=C.H.slice().reverse().map((h,i)=>`<div class="row" style="cursor:default"><span class="ic" style="background:${h.kind==='Oil'?'#ff9500':h.kind==='Tires'||h.kind==='Rotation'?'#5856d6':h.kind==='Reading'?'#8e8e93':'#34c759'}">${ico(h.kind==='Oil'?'gas':h.kind==='Reading'?'flag':'sight')}</span><span class="tx"><b>${esc(h.service)}</b><span>${esc(fd(h.date))}${h.note?' · '+esc(h.note):''}</span></span><span class="rt"><b>${fmt(h.odometer)}</b><span>mi</span></span></div>`).join('');
+ {const L=S.log.spend||[],n=new Date(),inM=x=>{const d=new Date(x.at);return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()},inY=x=>new Date(x.at).getFullYear()===n.getFullYear(),sum=a=>a.reduce((s,x)=>s+x.gal*x.price,0),g=a=>a.reduce((s,x)=>s+x.gal,0),Y=L.filter(inY);
+  $('spend').innerHTML=L.length?`<div class="stats" style="padding:0"><div><span class="k">This month</span><b>$${sum(L.filter(inM)).toFixed(0)}</b><span class="k">${L.filter(inM).length} fill-ups</span></div><div><span class="k">This year</span><b>$${sum(Y).toFixed(0)}</b><span class="k">${g(Y).toFixed(0)} gal</span></div><div><span class="k">Avg price</span><b>$${(sum(Y)/(g(Y)||1)).toFixed(2)}</b><span class="k">per gal</span></div></div>`:'<div class="k">When you tap Filled up and enter gallons and price, your gas spending adds up here.</div>'}
  $('specs').innerHTML=[['Car',SPEC.car],['Engine',SPEC.engine],['Fuel tank',SPEC.tank+' gal'],['Full-tank range',m?'~'+fullR()+' mi · '+m.mpg.toFixed(1)+' mpg from your last '+m.n+' fill-up'+(m.n>1?'s':''):'~'+SPEC.fullRange+' mi (your usual)'],['EPA mpg',SPEC.epa],['Fuel',SPEC.fuel],['Oil',SPEC.oil],['Tires','Continental '+SPEC.tires+' 91W M+S · '+SPEC.psi+' psi cold']].map(r=>`<tr><td class="k" style="width:36%">${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('');
  $('syncBox').innerHTML=c.pending.length?`<div class="k">${c.pending.length} update${c.pending.length>1?'s':''} not yet in your Apple Note.</div><button class="btn fill" id="bCopy" style="width:100%;margin-top:10px">Copy updates for Claude</button>`:`<div class="k">Everything here is also in your Apple Note${c.syncedAt?' (sent '+esc(c.syncedAt)+')':''}.</div>`;
  if($('bCopy'))$('bCopy').onclick=copyForClaude;
@@ -639,6 +712,7 @@ function fillAt(m,name,sid){const t=S.trip,full=fullR();
   if(+v.price&&sid)t.prices[sid]={p:+v.price,at:new Date().toISOString()};
   if(t.active)t.active.fuel.push({place:name||('mile '+m),gal:+v.gal||0,price:+v.price||0,odo:+v.odo||null,at:new Date().toISOString()});
   if(+v.odo){addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at fill-up',note:name||''})}
+  if(+v.gal&&+v.price){S.log.spend=(S.log.spend||[]).concat([{at:new Date().toISOString(),gal:+v.gal,price:+v.price,place:name||''}]);save('log')}
   if(+v.odo&&+v.gal){S.log.fills=(S.log.fills||[]).concat([{odo:+v.odo,gal:+v.gal,price:+v.price||0,at:new Date().toISOString()}]).slice(-40);save('log')}
   save('trip');render()})}
 function stopSheet(s){const t=S.trip,R=route();
@@ -687,12 +761,16 @@ function addStop(){const R=route();
 function zoned(str,tz){const d=new Date(str+':00Z');if(isNaN(d))return null;const f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(d).reduce((o,x)=>(o[x.type]=x.value,o),{});
  return new Date(d.getTime()-(Date.UTC(+f.year,+f.month-1,+f.day,+f.hour,+f.minute)-d.getTime()))}
 function localStr(d,tz){const f=new Intl.DateTimeFormat('en-CA',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(d).reduce((o,x)=>(o[x.type]=x.value,o),{});return `${f.year}-${f.month}-${f.day}T${f.hour}:${f.minute}`}
-function timing(){const t=S.trip,R=route(),dz=R.dest.tz,oz=R.origin.tz;
- sheet('Trip timing','Gas stops count as 10 minutes; planned stops use their stay length.',[{id:'how',type:'choices',opts:[['now','Leave now',''],['leave','Leave at a set time','Pick the time below first'],['arrive','Arrive by a set time','Pick the time below first; we’ll tell you when to leave']]},{id:'d',label:'Time'+(ZN[dz]?' (arrive-by is in '+ZN[dz]+')':''),type:'datetime-local',value:t.arriveBy?localStr(new Date(t.arriveBy),dz):localStr(t.depart?new Date(t.depart):new Date(Date.now()+36e5),oz)}],v=>{
-  if(v.how==='now'){t.depart=null;t.arriveBy=null}
-  else if(v.how==='leave'){const d=zoned(v.d,oz);t.depart=d?d.toISOString():null;t.arriveBy=null}
-  else{const d=zoned(v.d,dz);t.arriveBy=d?d.toISOString():null;t.depart=null}
-  save('trip');render()})}
+function timing(){const t=S.trip;
+ sheet('Trip timing','Gas stops count as 10 minutes; planned stops use their stay length.',[{id:'how',type:'choices',opts:[['now','Leave now','Times count from right now'],['leave','Leave at a set time','Pick when you’ll leave →'],['arrive','Arrive by a set time','Pick when you need to be there; we’ll tell you when to leave →']]}],v=>{
+  if(v.how==='now'){t.depart=null;t.arriveBy=null;save('trip');render()}else setTimeout(()=>pickTime(v.how),120)})}
+function pickTime(how){const t=S.trip,R=route(),leave=how==='leave',tz=leave?R.origin.tz:R.dest.tz;
+ let d=leave?(t.depart?new Date(t.depart):null):(t.arriveBy?new Date(t.arriveBy):null);
+ if(!d){d=new Date(Date.now()+(leave?60:R.b.min+120)*6e4);d.setMinutes(0,0,0)}
+ const ls=localStr(d,tz),zn=ZN[tz]||'Utah time';
+ sheet(leave?'When are you leaving?':'When do you need to get there?',(leave?'Your leave time, in ':'Your arrival time, in ')+zn+'.',[{id:'day',label:'Day',type:'date',value:ls.slice(0,10)},{id:'tm',label:'Time',type:'time',value:ls.slice(11,16)}],v=>{
+  if(!v.day||!v.tm)return;const z=zoned(v.day+'T'+v.tm,tz);if(!z)return;
+  if(leave){t.depart=z.toISOString();t.arriveBy=null}else{t.arriveBy=z.toISOString();t.depart=null}save('trip');render()},{label:'← Back',fn:timing})}
 function herePick(){const R=route(),F=fuel(R),pos=F.pos||0;
  const up=R.st.filter(s=>s.kind!=='zone'&&s.m>=pos-60).slice(0,7);
  sheet('Which exit did you just pass?','',[{id:'m',type:'choices',opts:[['0','Just leaving','mile 0']].concat(up.map(s=>[String(s.m),s.name,'mile '+s.m]))}],v=>setHere(+v.m),S.trip.active?{label:'Type my odometer instead',fn:()=>sheet('Odometer now','',[{id:'o',label:'Odometer',type:'number'}],w=>{if(+w.o)setHere(+w.o-S.trip.active.startOdo)})}:null)}
@@ -712,18 +790,22 @@ const navH=()=>document.documentElement.style.setProperty('--navh',document.quer
 addEventListener('scroll',()=>{document.querySelector('.nav').classList.toggle('compact',scrollY>30)},{passive:true});
 new ResizeObserver(navH).observe(document.querySelector('.nav'));
 for(const i of ['rIn','dIn'])$(i+'F').addEventListener('submit',e=>{e.preventDefault();const v=$(i).value;if(v===''||isNaN(+v))return;const t=S.trip;t.range=Math.round(+v);t.rangePos=t.pos||0;$(i).value='';$(i).blur();save('trip');render()});
+$('bAll').onclick=()=>{S.trip.showAll=!S.trip.showAll;save('trip');render()};
+$('dGps').onclick=()=>{S.trip.gps=!S.trip.gps;save('trip');if(S.trip.gps)startGPS();else stopGPS();render()};
+$('sBig').addEventListener('change',e=>{S.trip.big=e.target.checked;save('trip');render()});
 $('bTime').onclick=timing;$('bShare').onclick=shareTrip;$('bAdd').onclick=addStop;$('dHere').onclick=herePick;
 $('dFill').onclick=()=>{const R=route(),F=fuel(R),near=R.st.filter(s=>s.kind==='gas').reduce((b,s)=>!b||Math.abs(s.m-(F.pos||0))<Math.abs(b.m-(F.pos||0))?s:b,null);fillAt(F.pos||0,near&&Math.abs(near.m-(F.pos||0))<15?near.name:'',near&&Math.abs(near.m-(F.pos||0))<15?near.id:null)};
 $('bTrip').onclick=()=>{const t=S.trip,R=route();
- if(!t.active){sheet('Start trip','Logs miles and gas for this drive.',[{id:'odo',label:'Odometer now',type:'number',value:carInfo().est}],v=>{
+ if(!t.active){const F0=fuel(R);sheet('Start trip',(R.back?'Coming home from ':'Going to ')+R.b.name+'. Two quick numbers from your dash:',[{id:'rng',label:'Miles to empty',type:'number',value:F0.set?Math.round(F0.left):'',ph:'e.g. 312'},{id:'odo',label:'Odometer',type:'number',value:carInfo().est}],v=>{
+  if(v.rng!==''&&+v.rng>=0){t.range=+v.rng;t.rangePos=0}
   t.active={startOdo:+v.odo||carInfo().est,startAt:new Date().toISOString(),name:R.back?R.b.name+' → Home':'Home → '+R.dest.name,fuel:[]};t.pos=0;t.posAt=new Date().toISOString();t.rangePos=0;
-  if(+v.odo)addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at trip start',note:t.active.name});t.view='drive';save('trip');render()})}
+  if(+v.odo)addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at trip start',note:t.active.name});t.view='drive';t.gps=true;save('trip');render();startGPS()})}
  else{const a=t.active;sheet('End trip','Saves the trip and queues the miles for your Corolla tracker.',[{id:'odo',label:'Odometer now',type:'number',value:a.startOdo+Math.round(t.pos||R.M)}],v=>{
   const end=+v.odo||a.startOdo,miles=end-a.startOdo,gal=a.fuel.reduce((s,f)=>s+(+f.gal||0),0),cost=a.fuel.reduce((s,f)=>s+(+f.gal||0)*(+f.price||0),0);
   const f=a.fuel.filter(x=>x.odo&&x.gal).sort((x,y)=>x.odo-y.odo);let mi=0,gg=0;for(let i=1;i<f.length;i++){mi+=f[i].odo-f[i-1].odo;gg+=f[i].gal}
   S.log.trips.push({date:today(),name:a.name,startOdo:a.startOdo,endOdo:end,miles,gal:+gal.toFixed(2),cost:+cost.toFixed(2),mpg:gg?mi/gg:null,fuel:a.fuel});
   addHistory({date:today(),odometer:end,kind:'Reading',service:'Road trip: '+a.name,note:miles+' mi'+(gal?', '+gal.toFixed(1)+' gal':'')});
-  t.active=null;t.pos=0;t.posAt=null;t.checks={};t.view='trip';save('log');save('car');save('trip');render()})}};
+  t.active=null;t.pos=0;t.posAt=null;t.checks={};t.view='trip';t.gps=false;stopGPS();save('log');save('car');save('trip');render()})}};
 $('bNewRoute').onclick=()=>sheet('New trip preset','For any other drive from home. Add stops to it after.',[{id:'name',label:'Name',ph:'e.g. Grandma’s house'},{id:'sub',label:'City, state',ph:'e.g. St. George, UT'},{id:'addr',label:'Address'},{id:'miles',label:'Miles from home (one way)',type:'number'},{id:'hrs',label:'Drive time (hours)',type:'number',ph:'e.g. 3.75'}],v=>{
  if(!v.name||!+v.miles)return;const id='r'+Date.now().toString(36);S.custom.routes.push({id,name:v.name.trim(),sub:v.sub.trim(),addr:v.addr.trim()||v.sub.trim(),miles:+v.miles,min:Math.round((+v.hrs||(+v.miles/62))*60)});S.trip.route=id;save('custom');save('trip');render()});
 $('sRes').addEventListener('change',e=>{if(e.target.value!==''){S.trip.reserve=+e.target.value;save('trip');render()}});
@@ -732,7 +814,7 @@ $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')$('sheet').clas
 setInterval(()=>{if(!$('sheet').classList.contains('on'))render()},60000);
 
 render();
-applyAddr();render();setSync('Saved on this phone · works offline');
+applyAddr();render();if(S.trip.gps&&S.trip.active)startGPS();setSync('Saved on this phone · works offline');
 fetch('prices.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(p=>{if(p&&p.UT&&p.asOf&&p.asOf!==S.prices.asOf){S.prices=Object.assign(clone(DEF.prices),p);save('prices');render()}}).catch(()=>{});
 if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,done=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!done){done=true;location.reload()}});navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update();document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update()})}).catch(()=>{})}
 checkHash();addEventListener('hashchange',checkHash);
