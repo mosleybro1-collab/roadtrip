@@ -433,8 +433,9 @@ const fullR=()=>{const m=mpgInfo();return m?Math.round(Math.min(SPEC.tank*m.mpg,
 function priceOf(s){const o=(S.trip.prices||{})[s.id];if(o&&Date.now()-Date.parse(o.at)<4*864e5)return{p:o.p,seen:true};return s.st&&PRICE[s.st]?{p:PRICE[s.st],seen:false}:null}
 const pv=s=>(priceOf(s)||{p:9}).p;
 function fuel(R){
- const t=S.trip,pos=t.pos||0,res=+t.reserve||0;if(t.range==null)return{set:false,pos,plan:[]};
- const left=Math.max(0,t.range-(pos-t.rangePos)),reach=pos+left,safe=reach-res,full=fullR()-res;
+ const t=S.trip,pos=t.pos||0,res=+t.reserve||0;let range,rpos;
+ if(t.active&&t.range!=null){range=t.range;rpos=t.rangePos||0}else{const D=dayLog();if(!D.set)return{set:false,pos,plan:[]};range=D.left;rpos=pos}
+ const left=Math.max(0,range-(pos-rpos)),reach=pos+left,safe=reach-res,full=fullR()-res;
  const gas=R.st.filter(s=>s.kind==='gas'&&s.m>pos+1);
  const plan=[];let p=pos,sf=safe,state='ok',cands=[];
  for(let i=0;i<6&&R.M>sf;i++){
@@ -637,19 +638,22 @@ function renderDrive(R,F,T){
 /* ---------- everyday driving ---------- */
 const dt=iso=>{const d=new Date(iso);return d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+' · '+d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})};
 const ago=iso=>{const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<2?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':Math.round(m/1440)+' day'+(Math.round(m/1440)===1?'':'s')+' ago'};
-function dayState(){const L=(S.fuel.log||[]).slice().sort((a,b)=>a.at<b.at?-1:1),C=carInfo(),pace=Math.max(5,C.perDay||35);
+function dayLog(){const L=(S.fuel.log||[]).slice().sort((a,b)=>a.at<b.at?-1:1),C=carInfo(),pace=Math.max(5,C.perDay||35);
  const base=L.filter(x=>x.range!=null).pop();if(!base)return{set:false,pace,L};
  const odoAfter=L.filter(x=>x.odo&&x.at>=base.at),odo0=base.odo||null;
  let used;if(odo0&&odoAfter.length&&odoAfter[odoAfter.length-1].odo>odo0)used=odoAfter[odoAfter.length-1].odo-odo0+pace*Math.max(0,(Date.now()-Date.parse(odoAfter[odoAfter.length-1].at))/864e5);
  else used=pace*Math.max(0,(Date.now()-Date.parse(base.at))/864e5);
  const left=Math.max(0,base.range-used),days=left/pace;
  return{set:true,left,days,pace,base,L,lastFill:L.filter(x=>x.type==='fill').pop()}}
+function dayState(){const D=dayLog(),t=S.trip;
+ if(t.active&&t.range!=null){const left=Math.max(0,t.range-((t.pos||0)-(t.rangePos||0)));return Object.assign({},D,{set:true,left,days:left/D.pace,base:{type:'trip',at:t.posAt||t.active.startAt}})}
+ return D}
 function addFuel(e){S.fuel.log=(S.fuel.log||[]).concat([Object.assign({at:new Date().toISOString()},e)]).slice(-300);save('fuel')}
 function renderDay(){const D=dayState(),fr=fullR();
  const pct=D.set?Math.min(1,D.left/fr):0,col=!D.set?'var(--card2)':D.left<40?'var(--red)':D.left<90?'var(--orange)':'var(--green)',C=2*Math.PI*56;
  $('dRing').innerHTML=`<svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--card2)" stroke-width="13"/><circle cx="66" cy="66" r="56" fill="none" stroke="${col}" stroke-width="13" stroke-linecap="round" stroke-dasharray="${(pct*C).toFixed(1)} ${C.toFixed(1)}"/></svg><div class="v"><b>${D.set?fmt(D.left):'—'}</b><span>mi left</span></div>`;
  $('dayLeft').textContent=D.set?'~'+fmt(D.left)+' mi':'Not set';
- $('dayWhen').textContent=D.set?'From your '+(D.base.type==='fill'?'fill-up':'dash reading')+' '+ago(D.base.at):'Type your dash number below';
+ $('dayWhen').textContent=D.set?(D.base.type==='trip'?'Live from your road trip':'From your '+(D.base.type==='fill'?'fill-up':'dash reading')+' '+ago(D.base.at)):'Type your dash number below';
  $('dayIn').placeholder=D.set?String(Math.round(D.left)):'e.g. 120';$('dayPace').textContent=Math.round(D.pace);
  let a,b,c;
  if(!D.set){c='var(--blue)';a='Enter your miles to empty';b='Then it counts down as you drive and tells you when to get gas.'}
@@ -768,7 +772,7 @@ function sheet(title,subt,fields,onSave,extra){
 
 /* ---------- actions ---------- */
 function setHere(m){const t=S.trip;t.pos=Math.max(0,m);t.posAt=new Date().toISOString();save('trip');render()}
-function exactRange(){const t=S.trip;sheet('Miles to empty','Type what your dash shows. Full tank ≈ '+fullR()+' mi.',[{id:'r',label:'Miles to empty',type:'number',value:t.range!=null?Math.round(fuel(route()).left):''}],v=>{if(v.r==='')return;t.range=+v.r;t.rangePos=t.pos||0;save('trip');render()})}
+function exactRange(){const t=S.trip;sheet('Miles to empty','Type what your dash shows. Full tank ≈ '+fullR()+' mi.',[{id:'r',label:'Miles to empty',type:'number',value:fuel(route()).set?Math.round(fuel(route()).left):''}],v=>{if(v.r==='')return;const r=Math.round(+v.r);addFuel({type:'range',range:r});if(t.active){t.range=r;t.rangePos=t.pos||0;save('trip')}render()})}
 function fillAt(m,name,sid){const t=S.trip,full=fullR();
  sheet('Filled up'+(name?' · '+name:''),'Fill to full, then add gallons and odometer so the app learns your real MPG.',[{id:'gal',label:'Gallons (from the pump)',type:'number'},{id:'price',label:'Price per gallon',type:'number',value:sid?(priceOf(route().st.find(s=>s.id===sid))||{}).p||'':''},{id:'odo',label:'Odometer',type:'number'},{id:'range',label:'Miles to empty now',type:'number',value:full}],v=>{
   t.range=+v.range||full;t.rangePos=m;t.pos=Math.max(t.pos||0,m);t.posAt=new Date().toISOString();
@@ -855,7 +859,7 @@ document.addEventListener('click',e=>{const t=S.trip,q=sel=>e.target.closest(sel
 const navH=()=>document.documentElement.style.setProperty('--navh',document.querySelector('.nav').offsetHeight+'px');
 addEventListener('scroll',()=>{document.querySelector('.nav').classList.toggle('compact',scrollY>30)},{passive:true});
 new ResizeObserver(navH).observe(document.querySelector('.nav'));
-for(const i of ['rIn','dIn'])$(i+'F').addEventListener('submit',e=>{e.preventDefault();const v=$(i).value;if(v===''||isNaN(+v))return;const t=S.trip;t.range=Math.round(+v);t.rangePos=t.pos||0;$(i).value='';$(i).blur();save('trip');render()});
+for(const i of ['rIn','dIn'])$(i+'F').addEventListener('submit',e=>{e.preventDefault();const v=$(i).value;if(v===''||isNaN(+v))return;const t=S.trip,r=Math.round(+v);addFuel({type:'range',range:r});if(t.active){t.range=r;t.rangePos=t.pos||0}$(i).value='';$(i).blur();save('trip');render()});
 $('bAll').onclick=()=>{S.trip.showAll=!S.trip.showAll;save('trip');render()};
 $('dGps').onclick=()=>{S.trip.gps=!S.trip.gps;save('trip');if(S.trip.gps)startGPS();else stopGPS();render()};
 $('sBig').addEventListener('change',e=>{S.trip.big=e.target.checked;save('trip');render()});
@@ -866,10 +870,11 @@ $('bTime').onclick=timing;$('bShare').onclick=shareTrip;$('bAdd').onclick=addSto
 $('dFill').onclick=()=>{const R=route(),F=fuel(R),near=R.st.filter(s=>s.kind==='gas').reduce((b,s)=>!b||Math.abs(s.m-(F.pos||0))<Math.abs(b.m-(F.pos||0))?s:b,null);fillAt(F.pos||0,near&&Math.abs(near.m-(F.pos||0))<15?near.name:'',near&&Math.abs(near.m-(F.pos||0))<15?near.id:null)};
 $('bTrip').onclick=()=>{const t=S.trip,R=route();
  if(!t.active){const F0=fuel(R);sheet('Start trip',(R.back?'Coming home from ':'Going to ')+R.b.name+'. Two quick numbers from your dash:',[{id:'rng',label:'Miles to empty',type:'number',value:F0.set?Math.round(F0.left):'',ph:'e.g. 312'},{id:'odo',label:'Odometer',type:'number',value:carInfo().est}],v=>{
-  if(v.rng!==''&&+v.rng>=0){t.range=+v.rng;t.rangePos=0}
+  if(v.rng!==''&&+v.rng>=0){t.range=Math.round(+v.rng);addFuel({type:'range',range:t.range})}else{const D=dayLog();t.range=D.set?Math.round(D.left):null}t.rangePos=0;
   t.active={startOdo:+v.odo||carInfo().est,startAt:new Date().toISOString(),name:R.back?R.b.name+' → Home':'Home → '+R.dest.name,fuel:[]};t.pos=0;t.posAt=new Date().toISOString();t.rangePos=0;
   if(+v.odo)addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at trip start',note:t.active.name});t.view='drive';t.gps=true;save('trip');render();startGPS()})}
  else{const a=t.active;sheet('End trip','Saves the trip and queues the miles for your Corolla tracker.',[{id:'odo',label:'Odometer now',type:'number',value:a.startOdo+Math.round(t.pos||R.M)}],v=>{
+  {const F1=fuel(R);if(F1.set)addFuel({type:'range',range:Math.round(F1.left),note:'end of trip'})}t.range=null;
   const end=+v.odo||a.startOdo,miles=end-a.startOdo,gal=a.fuel.reduce((s,f)=>s+(+f.gal||0),0),cost=a.fuel.reduce((s,f)=>s+(+f.gal||0)*(+f.price||0),0);
   const f=a.fuel.filter(x=>x.odo&&x.gal).sort((x,y)=>x.odo-y.odo);let mi=0,gg=0;for(let i=1;i<f.length;i++){mi+=f[i].odo-f[i-1].odo;gg+=f[i].gal}
   S.log.trips.push({date:today(),name:a.name,startOdo:a.startOdo,endOdo:end,miles,gal:+gal.toFixed(2),cost:+cost.toFixed(2),mpg:gg?mi/gg:null,fuel:a.fuel});
