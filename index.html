@@ -404,7 +404,7 @@ const today=()=>new Date().toLocaleDateString('en-CA');
 const setSync=t=>{$('sync').textContent=t};
 const tm={};let chain=Promise.resolve();
 function quietSave(k){try{localStorage.setItem('rt2_'+k,JSON.stringify(S[k]))}catch(e){setSync('Couldn’t save on this phone (private browsing?)')}}
-const snap=()=>{const o=clone({trip:S.trip,custom:S.custom,log:S.log,car:S.car,fuel:S.fuel});delete o.trip.view;delete o.trip.showAll;delete o.trip.posAt;return JSON.stringify(o)};
+const snap=()=>{const o=clone({trip:S.trip,custom:S.custom,log:S.log,car:S.car,fuel:S.fuel});for(const k of ['view','showAll','posAt','pos','app','route','dir','mode','gps','big','checks'])delete o.trip[k];return JSON.stringify(o)};
 let preSnap=null,undoT=null,toastT=null;
 function save(k){quietSave(k);clearTimeout(undoT);undoT=setTimeout(offerUndo,60)}
 function offerUndo(){if(!preSnap)return;const now=snap();if(now===preSnap)return;const back=preSnap;preSnap=null;
