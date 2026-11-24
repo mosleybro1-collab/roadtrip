@@ -203,10 +203,14 @@ html,body{background:#000}
 html.big body{zoom:1.15}
 .field .sw{background:#39393d;width:51px;min-height:0}.field .sw:checked{background:#30d158}
 .form input[type=date],.form input[type=time]{font-size:22px;font-weight:600;color:var(--blue)}
+.appseg{margin-bottom:12px;background:#1c1c1e}.appseg button{min-height:36px;font-size:15px}
+.appseg button[aria-pressed=true]{background:#636366;color:#fff}
+.tabbar{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:1fr}
 </style>
 </head>
 <body>
 <header class="nav" id="nav"><div class="in">
+  <div class="seg appseg" id="appSeg" role="group" aria-label="Mode"><button data-app="trip">Road trip</button><button data-app="day">Everyday</button></div>
   <div class="toprow">
     <div class="title" id="destName">Henderson</div>
   </div>
@@ -214,6 +218,24 @@ html.big body{zoom:1.15}
   <div class="pills" id="routes"></div>
   <div class="seg dirseg" id="dirSeg" role="group" aria-label="Direction"></div>
 </div></header>
+
+<main class="wrap" id="dayV" hidden>
+  <section class="card" style="margin-top:16px">
+    <div class="fuelrow"><div class="ring" id="dRing" style="width:120px;height:120px"></div>
+      <div><div class="k">Estimated now</div><div class="stat" id="dayLeft">—</div><div class="k" id="dayWhen"></div></div></div>
+    <form class="rbox" id="dayF" style="margin-top:16px"><label for="dayIn">Miles to empty on your dash</label><div class="rrow"><div class="inwrap"><input id="dayIn" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="600" placeholder="e.g. 120" enterkeyhint="done"><span>mi</span></div><button class="btn fill" type="submit">Set</button></div></form>
+    <div class="advice" id="dayAdvice"></div>
+  </section>
+  <div class="btns">
+    <button class="btn fill big" id="dayFill"><svg class="icon" viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 21h13M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3M7 7h5"/></svg>Filled up</button>
+    <button class="btn big" id="dayOdo">Odometer</button>
+  </div>
+  <div class="hdr">This month</div>
+  <section class="card"><div class="stats" style="padding:0" id="dayStats"></div></section>
+  <div class="hdr">Fuel log</div>
+  <div class="list" id="dayLog"></div>
+  <p class="note">Miles left is an estimate between updates, based on how much you usually drive (about <span id="dayPace">35</span> mi a day). Type your dash number any time to correct it. Tap an entry to delete it.</p>
+</main>
 
 <main class="wrap" id="tripV">
   <div class="seg" style="margin-top:16px" id="modes"></div>
@@ -358,7 +380,7 @@ const BASE={
  dynamite:{id:'dynamite',name:'Phoenix',sub:'Dynamite Ranch · via Henderson',addr:'Phoenix, AZ',ll:[33.76,-112.14],miles:673,min:640,zones:AZZONES,stops:VIA_HENDERSON},
  mesa:{id:'mesa',name:'Mesa',sub:'via Henderson',addr:'Mesa, AZ',ll:[33.45,-111.79],miles:710,min:680,zones:AZZONES,stops:VIA_HENDERSON}
 };
-const DEF={addr:{},prices:{UT:3.96,NV:4.80,AZ:3.97,ID:3.99,asOf:'Nov 20, 2026',source:'AAA state averages'},trip:{route:'henderson',dir:'out',mode:'stops',range:null,rangePos:0,pos:0,posAt:null,depart:null,arriveBy:null,reserve:30,speed:null,active:null,checks:{},off:{},mins:{},prices:{},view:'trip'},
+const DEF={fuel:{log:[]},addr:{},prices:{UT:3.96,NV:4.80,AZ:3.97,ID:3.99,asOf:'Nov 20, 2026',source:'AAA state averages'},trip:{route:'henderson',dir:'out',mode:'stops',range:null,rangePos:0,pos:0,posAt:null,depart:null,arriveBy:null,reserve:30,speed:null,active:null,checks:{},off:{},mins:{},prices:{},view:'trip'},
  custom:{stops:[],routes:[]},log:{trips:[],fills:[]},car:{history:[
  {date:'2026-05-13',odometer:119920,kind:'Tires',service:'New tires installed (Discount Tire)',note:'Date approximate'},
  {date:'2026-05-13',odometer:119920,kind:'Oil',service:'Oil change',note:'First oil change after getting the car'},
@@ -366,7 +388,7 @@ const DEF={addr:{},prices:{UT:3.96,NV:4.80,AZ:3.97,ID:3.99,asOf:'Nov 20, 2026',s
  {date:'2026-10-03',odometer:125224,kind:'Oil',service:'Oil change, full synthetic',note:''},
  {date:'2026-10-31',odometer:126096,kind:'Reading',service:'Odometer reading',note:''},
  {date:'2026-11-12',odometer:126388,kind:'Tires',service:'Tire rotation & balance, TPMS service, inspection (Discount Tire, Provo)',note:''}],pending:[],syncedAt:null}};
-const PATHS={prices:1,trip:1,custom:1,log:1,car:1,addr:1};
+const PATHS={fuel:1,prices:1,trip:1,custom:1,log:1,car:1,addr:1};
 const IC={gas:'<path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 21h13M15 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3M7 7h5"/>',food:'<path d="M5 3v8a3 3 0 0 0 6 0V3M8 3v18M17 21V3c-2 1-3 4-3 7h3"/>',family:'<path d="M3 11 12 4l9 7M5 10v10h14V10M10 20v-5h4v5"/>',rest:'<path d="M4 20V8l8-5 8 5v12M9 20v-6h6v6"/>',sight:'<path d="M3 20 9 9l4 6 3-4 5 9z"/><circle cx="16" cy="6" r="2"/>',flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'};
 const KC={gas:'#ff9500',food:'#ff2d55',family:'#34c759',rest:'#5856d6',sight:'#007aff',flag:'#8e8e93'};
 const ico=k=>`<svg class="icon" viewBox="0 0 24 24">${IC[k]||IC.flag}</svg>`;
@@ -382,12 +404,12 @@ const today=()=>new Date().toLocaleDateString('en-CA');
 const setSync=t=>{$('sync').textContent=t};
 const tm={};let chain=Promise.resolve();
 function quietSave(k){try{localStorage.setItem('rt2_'+k,JSON.stringify(S[k]))}catch(e){setSync('Couldn’t save on this phone (private browsing?)')}}
-const snap=()=>{const o=clone({trip:S.trip,custom:S.custom,log:S.log,car:S.car});delete o.trip.view;delete o.trip.showAll;delete o.trip.posAt;return JSON.stringify(o)};
+const snap=()=>{const o=clone({trip:S.trip,custom:S.custom,log:S.log,car:S.car,fuel:S.fuel});delete o.trip.view;delete o.trip.showAll;delete o.trip.posAt;return JSON.stringify(o)};
 let preSnap=null,undoT=null,toastT=null;
 function save(k){quietSave(k);clearTimeout(undoT);undoT=setTimeout(offerUndo,60)}
 function offerUndo(){if(!preSnap)return;const now=snap();if(now===preSnap)return;const back=preSnap;preSnap=null;
  const el=$('toast');el.innerHTML='<span>Change saved</span><button type="button">Undo</button>';el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),6000);
- el.querySelector('button').onclick=()=>{const o=JSON.parse(back),view=S.trip.view;for(const k of ['trip','custom','log','car']){S[k]=Object.assign(clone(DEF[k]),o[k]);if(k==='trip')S.trip.view=view;quietSave(k)}el.classList.remove('on');render()}}
+ el.querySelector('button').onclick=()=>{const o=JSON.parse(back),view=S.trip.view;for(const k of ['trip','custom','log','car','fuel']){S[k]=Object.assign(clone(DEF[k]),o[k]);if(k==='trip')S.trip.view=view;quietSave(k)}el.classList.remove('on');render()}}
 for(const ev of ['click','submit','change'])document.addEventListener(ev,e=>{if(e.target.closest&&e.target.closest('#toast'))return;if(ev==='click'&&$('sheet').classList.contains('on')&&!e.target.closest('#shF'))return;preSnap=preSnap&&ev!=='click'?preSnap:snap()},true);
 
 /* ---------- route model ---------- */
@@ -469,12 +491,17 @@ function copyForClaude(){const c=S.car,L=S.log.trips.slice(-5);
 /* ---------- render ---------- */
 function render(){
  const R=route(),F=fuel(R),T=times(R,F),t=S.trip,fr=fullR();
- const v=['trip','map','drive','car'].includes(t.view)?t.view:'trip',drive=v!=='map';
- for(const k of ['trip','map','drive','car'])$(k+'V').hidden=v!==k;
- document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===v));
- $('routes').hidden=v==='car';$('dirSeg').hidden=v==='car';
+ const day=t.app==='day';let v=['trip','map','drive','car'].includes(t.view)?t.view:'trip';if(day&&v!=='car')v='day';const drive=v!=='map';
+ for(const k of ['trip','map','drive','car','day'])$(k+'V').hidden=v!==k;
+ document.querySelectorAll('[data-app]').forEach(b=>b.setAttribute('aria-pressed',(b.dataset.app==='day')===day));
+ document.querySelector('[data-tab=map]').hidden=day;document.querySelector('[data-tab=drive]').hidden=day;
+ document.querySelector('[data-tab=trip] span').textContent=day?'Fuel':'Trip';
+ if(v==='day'){$('routes').hidden=true;$('dirSeg').hidden=true;$('destName').textContent='Fuel';$('destSub').textContent='Everyday driving · '+SPEC.car;renderDay()}
+ document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===v||(v==='day'&&b.dataset.tab==='trip')));
+ if(v!=='day'){$('routes').hidden=v==='car';$('dirSeg').hidden=v==='car';
  $('destName').textContent=v==='car'?'Corolla':R.dest.name;
  $('destSub').textContent=v==='car'?SPEC.car:(R.back?'from '+R.b.name+' · ':(R.dest.sub?R.dest.sub+' · ':''))+'~'+R.M+' mi · '+hm(R.b.min)+' driving';
+ }
  $('dirSeg').innerHTML=`<button data-dir="out" aria-pressed="${!R.back}">Going →</button><button data-dir="back" aria-pressed="${R.back}">← Coming home</button>`;
  $('routes').innerHTML=Object.values(allRoutes()).map(r=>`<button class="pill" data-r="${esc(r.id)}" aria-pressed="${r.id===t.route}">${esc(r.name)}</button>`).join('');
  $('modes').innerHTML=[['direct','Straight there'],['stops','Make stops']].map(([k,l])=>`<button data-mode="${k}" aria-pressed="${t.mode===k}">${l}</button>`).join('');
@@ -607,6 +634,42 @@ function renderDrive(R,F,T){
  g.innerHTML=`<span class="dot2 ${on&&GPS.ok?'on':on?'wait':''}"></span><span><b>${on?(GPS.ok?'Location on':'Finding your location…'):'Location off'}</b><small>${on?(GPS.ok?'Your spot on the route updates by itself'+(GPS.off>8?' · you’re ~'+Math.round(GPS.off)+' mi off the route':''):GPS.err||'Allow location when your iPhone asks'):'Tap to turn on automatic location'}</small></span>`;
  $('dNote').textContent=on&&GPS.ok?'Screen stays on while you’re on this tab.':'Let a passenger tap, or tap while stopped.';
 }
+/* ---------- everyday driving ---------- */
+const dt=iso=>{const d=new Date(iso);return d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+' · '+d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})};
+const ago=iso=>{const m=Math.round((Date.now()-Date.parse(iso))/6e4);return m<2?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':Math.round(m/1440)+' day'+(Math.round(m/1440)===1?'':'s')+' ago'};
+function dayState(){const L=(S.fuel.log||[]).slice().sort((a,b)=>a.at<b.at?-1:1),C=carInfo(),pace=Math.max(5,C.perDay||35);
+ const base=L.filter(x=>x.range!=null).pop();if(!base)return{set:false,pace,L};
+ const odoAfter=L.filter(x=>x.odo&&x.at>=base.at),odo0=base.odo||null;
+ let used;if(odo0&&odoAfter.length&&odoAfter[odoAfter.length-1].odo>odo0)used=odoAfter[odoAfter.length-1].odo-odo0+pace*Math.max(0,(Date.now()-Date.parse(odoAfter[odoAfter.length-1].at))/864e5);
+ else used=pace*Math.max(0,(Date.now()-Date.parse(base.at))/864e5);
+ const left=Math.max(0,base.range-used),days=left/pace;
+ return{set:true,left,days,pace,base,L,lastFill:L.filter(x=>x.type==='fill').pop()}}
+function addFuel(e){S.fuel.log=(S.fuel.log||[]).concat([Object.assign({at:new Date().toISOString()},e)]).slice(-300);save('fuel')}
+function renderDay(){const D=dayState(),fr=fullR();
+ const pct=D.set?Math.min(1,D.left/fr):0,col=!D.set?'var(--card2)':D.left<40?'var(--red)':D.left<90?'var(--orange)':'var(--green)',C=2*Math.PI*56;
+ $('dRing').innerHTML=`<svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="56" fill="none" stroke="var(--card2)" stroke-width="13"/><circle cx="66" cy="66" r="56" fill="none" stroke="${col}" stroke-width="13" stroke-linecap="round" stroke-dasharray="${(pct*C).toFixed(1)} ${C.toFixed(1)}"/></svg><div class="v"><b>${D.set?fmt(D.left):'—'}</b><span>mi left</span></div>`;
+ $('dayLeft').textContent=D.set?'~'+fmt(D.left)+' mi':'Not set';
+ $('dayWhen').textContent=D.set?'From your '+(D.base.type==='fill'?'fill-up':'dash reading')+' '+ago(D.base.at):'Type your dash number below';
+ $('dayIn').placeholder=D.set?String(Math.round(D.left)):'e.g. 120';$('dayPace').textContent=Math.round(D.pace);
+ let a,b,c;
+ if(!D.set){c='var(--blue)';a='Enter your miles to empty';b='Then it counts down as you drive and tells you when to get gas.'}
+ else if(D.left<40){c='var(--red)';a='Get gas today';b='About '+fmt(D.left)+' mi left, roughly '+(D.days<1?'less than a day':Math.round(D.days)+' day')+' of normal driving.'}
+ else if(D.left<90){c='var(--orange)';a='Fill up in the next day or two';b='About '+fmt(D.left)+' mi left (~'+Math.max(1,Math.round(D.days))+' days at your usual '+Math.round(D.pace)+' mi/day).'}
+ else{const by=new Date(Date.now()+Math.max(0,D.days-1)*864e5);c='var(--green)';a='You’re good for about '+Math.round(D.days)+' days';b='Plan to fill up around '+by.toLocaleDateString([],{weekday:'long'})+'.'}
+ $('dayAdvice').innerHTML=`<div class="dot" style="background:${c}">${ico('gas')}</div><div><b>${esc(a)}</b><span>${esc(b)}</span></div>`;
+ const n=new Date(),L=D.L,mo=L.filter(x=>x.type==='fill'&&new Date(x.at).getMonth()===n.getMonth()&&new Date(x.at).getFullYear()===n.getFullYear()),cost=mo.reduce((s,x)=>s+(x.gal||0)*(x.price||0),0),m=mpgInfo();
+ $('dayStats').innerHTML=`<div><span class="k">Last fill-up</span><b>${D.lastFill?esc(ago(D.lastFill.at)==='just now'?'Today':ago(D.lastFill.at).replace(' ago','')):'—'}</b><span class="k">${D.lastFill?(ago(D.lastFill.at)==='just now'?'just now':'ago'):'none yet'}</span></div><div><span class="k">Gas spent</span><b>$${cost.toFixed(0)}</b><span class="k">${mo.length} fill-up${mo.length===1?'':'s'}</span></div><div><span class="k">Your MPG</span><b>${m?m.mpg.toFixed(1):'—'}</b><span class="k">${m?'last '+m.n+' fills':'log 2 fill-ups'}</span></div>`;
+ $('dayLog').innerHTML=L.length?L.slice().reverse().slice(0,40).map((x,i)=>{const tp=x.type==='fill'?['Filled up','#ff9500','gas']:x.type==='odo'?['Odometer','#8e8e93','flag']:['Dash reading','#0a84ff','flag'];
+  const det=x.type==='fill'?[x.gal?x.gal+' gal':'',x.price?'$'+(+x.price).toFixed(2)+'/gal':'',x.gal&&x.price?'$'+(x.gal*x.price).toFixed(2):'',x.place||''].filter(Boolean).join(' · '):x.type==='odo'?fmt(x.odo)+' mi':fmt(x.range)+' mi to empty';
+  return `<button class="row" data-fl="${esc(x.at)}"><span class="ic" style="background:${tp[1]}">${ico(tp[2])}</span><span class="tx"><b>${tp[0]}</b><span>${esc(det)}</span></span><span class="rt"><span>${esc(dt(x.at))}</span></span></button>`}).join(''):'<div class="row" style="cursor:default"><span class="tx"><span>Your fill-ups and dash readings will show here with the date and time.</span></span></div>';
+}
+function dayFill(){const D=dayState();
+ sheet('Filled up','Saved with today’s date and time. Gallons and odometer let it learn your real MPG.',[{id:'gal',label:'Gallons',type:'number'},{id:'price',label:'Price per gallon',type:'number'},{id:'odo',label:'Odometer (optional)',type:'number'},{id:'place',label:'Station (optional)',ph:'e.g. Maverik on University Ave'},{id:'range',label:'Miles to empty now',type:'number',value:fullR()}],v=>{
+  const e={type:'fill',gal:+v.gal||0,price:+v.price||0,odo:+v.odo||null,place:(v.place||'').trim(),range:+v.range||fullR()};addFuel(e);
+  if(e.gal&&e.price){S.log.spend=(S.log.spend||[]).concat([{at:new Date().toISOString(),gal:e.gal,price:e.price,place:e.place}]);save('log')}
+  if(e.odo&&e.gal){S.log.fills=(S.log.fills||[]).concat([{odo:e.odo,gal:e.gal,price:e.price,at:new Date().toISOString()}]).slice(-40);save('log')}
+  if(e.odo)addHistory({date:today(),odometer:e.odo,kind:'Reading',service:'Odometer at fill-up',note:e.place});render()})}
+
 /* ---------- GPS + keep awake ---------- */
 const GPS={id:null,ok:false,err:'',off:0,last:0};
 function startGPS(){if(GPS.id!==null||!('geolocation' in navigator)){if(!('geolocation' in navigator))GPS.err='This phone can’t share location here';return}
@@ -712,6 +775,7 @@ function fillAt(m,name,sid){const t=S.trip,full=fullR();
   if(+v.price&&sid)t.prices[sid]={p:+v.price,at:new Date().toISOString()};
   if(t.active)t.active.fuel.push({place:name||('mile '+m),gal:+v.gal||0,price:+v.price||0,odo:+v.odo||null,at:new Date().toISOString()});
   if(+v.odo){addHistory({date:today(),odometer:+v.odo,kind:'Reading',service:'Odometer at fill-up',note:name||''})}
+  addFuel({type:'fill',gal:+v.gal||0,price:+v.price||0,odo:+v.odo||null,place:name||'',range:+v.range||full,trip:true});
   if(+v.gal&&+v.price){S.log.spend=(S.log.spend||[]).concat([{at:new Date().toISOString(),gal:+v.gal,price:+v.price,place:name||''}]);save('log')}
   if(+v.odo&&+v.gal){S.log.fills=(S.log.fills||[]).concat([{odo:+v.odo,gal:+v.gal,price:+v.price||0,at:new Date().toISOString()}]).slice(-40);save('log')}
   save('trip');render()})}
@@ -778,6 +842,8 @@ function herePick(){const R=route(),F=fuel(R),pos=F.pos||0;
 document.addEventListener('click',e=>{const t=S.trip,q=sel=>e.target.closest(sel);
  let el;
  if(el=q('[data-dir]')){if(t.dir!==el.dataset.dir){t.dir=el.dataset.dir;t.pos=0;t.posAt=null;t.rangePos=0;save('trip');render()}}
+ else if(el=q('[data-app]')){t.app=el.dataset.app;if(t.app==='day'&&t.view!=='car')t.view='trip';save('trip');render();scrollTo(0,0)}
+ else if(el=q('[data-fl]')){const at=el.dataset.fl,x=S.fuel.log.find(y=>y.at===at);if(x)sheet('Delete this entry?',dt(at),[{id:'x',type:'choices',opts:[['del','Delete it',''],['keep','Keep it','']]}],w=>{if(w.x==='del'){S.fuel.log=S.fuel.log.filter(y=>y.at!==at);save('fuel');render()}})}
  else if(el=q('[data-r]')){t.route=el.dataset.r;t.pos=0;t.posAt=null;t.rangePos=0;save('trip');render()}
  else if(el=q('[data-mode]')){t.mode=el.dataset.mode;save('trip');render()}
  else if(el=q('[data-g]')){if(el.dataset.g==='x')exactRange();else{t.range=Math.round(fullR()*+el.dataset.g);t.rangePos=t.pos||0;save('trip');render()}}
@@ -793,6 +859,9 @@ for(const i of ['rIn','dIn'])$(i+'F').addEventListener('submit',e=>{e.preventDef
 $('bAll').onclick=()=>{S.trip.showAll=!S.trip.showAll;save('trip');render()};
 $('dGps').onclick=()=>{S.trip.gps=!S.trip.gps;save('trip');if(S.trip.gps)startGPS();else stopGPS();render()};
 $('sBig').addEventListener('change',e=>{S.trip.big=e.target.checked;save('trip');render()});
+$('dayF').addEventListener('submit',e=>{e.preventDefault();const v=$('dayIn').value;if(v===''||isNaN(+v))return;addFuel({type:'range',range:Math.round(+v)});$('dayIn').value='';$('dayIn').blur();render()});
+$('dayFill').onclick=dayFill;
+$('dayOdo').onclick=()=>sheet('Odometer','Helps the estimate know how far you’ve actually driven.',[{id:'o',label:'Odometer (mi)',type:'number',value:carInfo().est}],v=>{if(!+v.o)return;addFuel({type:'odo',odo:+v.o});addHistory({date:today(),odometer:+v.o,kind:'Reading',service:'Odometer reading',note:''});render()});
 $('bTime').onclick=timing;$('bShare').onclick=shareTrip;$('bAdd').onclick=addStop;$('dHere').onclick=herePick;
 $('dFill').onclick=()=>{const R=route(),F=fuel(R),near=R.st.filter(s=>s.kind==='gas').reduce((b,s)=>!b||Math.abs(s.m-(F.pos||0))<Math.abs(b.m-(F.pos||0))?s:b,null);fillAt(F.pos||0,near&&Math.abs(near.m-(F.pos||0))<15?near.name:'',near&&Math.abs(near.m-(F.pos||0))<15?near.id:null)};
 $('bTrip').onclick=()=>{const t=S.trip,R=route();
